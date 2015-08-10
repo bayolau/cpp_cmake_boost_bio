@@ -5,7 +5,7 @@ if (USE_FOO)
 endif (USE_FOO)
 
 if (USE_SEQAN)
-  message( "> using seqan" )
+  message(STATUS "using seqan" )
   include_directories("${OPT_DIR}/seqan/include")
   set( SEQAN_FLAGS "-DSEQAN_ENABLE_DEBUG=0 -DSEQAN_ENABLE_TESTING=0 -DSEQAN_HAS_BZIP=1 -DSEQAN_HAS_ZLIB=1" )
   set( SEQAN_FLAGS "${SEQAN_FLAGS} -W -Wall -Wno-long-long -pedantic -Wno-variadic-macros" )

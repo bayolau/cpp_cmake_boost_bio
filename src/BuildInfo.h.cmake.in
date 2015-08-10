@@ -1,0 +1,35 @@
+set (VERSION_MAJOR @VERSION_MAJOR@)
+set (VERSION_MINOR @VERSION_MINOR@)
+set (USE_FOO @USE_FOO@)
+set (USE_SEQAN @USE_SEQAN@)
+
+message(STATUS "generating BuildInfo.h")
+
+# get git status
+execute_process(
+  COMMAND git rev-parse --abbrev-ref HEAD
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_BRANCH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+execute_process(
+  COMMAND git log -1 --format=%h
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_COMMIT_HASH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+execute_process(
+  COMMAND git diff --quiet --ignore-submodules=untracked
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  RESULT_VARIABLE GIT_UNCOMMITED_CHANGE
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if (GIT_UNCOMMITED_CHANGE)
+  set (GIT_DIRTY_FLAG "-dirty")
+endif()
+
+# write CMake settings to a header
+configure_file (
+  "${SRC_DIR}/BuildInfo.h.in"
+  "${PROJECT_BINARY_DIR}/BuildInfo.h"
+  )
