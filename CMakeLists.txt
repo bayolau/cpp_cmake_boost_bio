@@ -15,6 +15,11 @@ set (CMAKE_CXX_STANDARD 11)
 set (SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 set (OPT_DIR ${PROJECT_SOURCE_DIR}/opt)
 
+set (OPT_INCLUDE ${OPT_DIR}/include)
+set (OPT_LIB ${OPT_DIR}/lib)
+include_directories(${OPT_INCLUDE})
+link_directories(${OPT_LIB})
+
 # get git status
 execute_process(
   COMMAND git rev-parse --abbrev-ref HEAD
@@ -47,3 +52,4 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # deal with the source directory
 add_subdirectory(${SRC_DIR})
+add_subdirectory(${OPT_DIR})
