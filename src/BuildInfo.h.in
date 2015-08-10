@@ -1,0 +1,17 @@
+#ifndef BUILDINFO_H
+#define BUILDINFO_H
+
+#cmakedefine USE_FOO
+#cmakedefine USE_SEQAN
+
+namespace bayolau {
+  struct BuildInfo {
+    static const char* git_status() { return git_status_; }
+    static const char* version() { return version_; }
+  private:
+    static constexpr char const*const git_status_ = "@GIT_BRANCH@:@GIT_COMMIT_HASH@@GIT_DIRTY_FLAG@";
+    static constexpr char const*const version_ = "@VERSION_MAJOR@.@VERSION_MINOR@";
+  };
+}
+
+#endif

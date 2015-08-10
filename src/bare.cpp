@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "CMakeConfig.h"
+#include "BuildInfo.h"
 
 #ifdef USE_SEQAN
 #include <seqan/basic.h>
@@ -13,8 +13,8 @@
 #endif
 
 int main(int argc, char* argv[]) {
-  std::cout << VERSION_MAJOR << std::endl;
-  std::cout << VERSION_MINOR << std::endl;
+  std::cout << "build version " << bayolau::BuildInfo::version() << std::endl;
+  std::cout << "git status " << bayolau::BuildInfo::git_status() << std::endl;
 #ifdef USE_FOO
   junk::foo::printTo(std::cout);
 #endif

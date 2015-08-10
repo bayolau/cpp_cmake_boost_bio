@@ -15,10 +15,33 @@ set (CMAKE_CXX_STANDARD 11)
 set (SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 set (OPT_DIR ${PROJECT_SOURCE_DIR}/opt)
 
+# get git status
+execute_process(
+  COMMAND git rev-parse --abbrev-ref HEAD
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_BRANCH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+execute_process(
+  COMMAND git log -1 --format=%h
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  OUTPUT_VARIABLE GIT_COMMIT_HASH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+execute_process(
+  COMMAND git diff --quiet
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  RESULT_VARIABLE GIT_UNCOMMITED_CHANGE
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if (GIT_UNCOMMITED_CHANGE)
+  set (GIT_DIRTY_FLAG "-dirty")
+endif()
+
 # write CMake settings to a header
 configure_file (
-  "${SRC_DIR}/CMakeConfig.h.in"
-  "${PROJECT_BINARY_DIR}/CMakeConfig.h"
+  "${SRC_DIR}/BuildInfo.h.in"
+  "${PROJECT_BINARY_DIR}/BuildInfo.h"
   )
 include_directories("${PROJECT_BINARY_DIR}")
 
