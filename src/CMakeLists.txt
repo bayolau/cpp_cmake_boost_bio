@@ -14,7 +14,9 @@ if (USE_SEQAN)
   set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lbz2 -lz" )
 endif (USE_SEQAN)
 
-add_executable(bare bare.cpp)
+set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a)
+
+add_executable(bare bare.cpp util/ProgramOptions.h)
 target_link_libraries(bare ${EXTRA_LIBS})
 
 install (TARGETS bare DESTINATION bin)

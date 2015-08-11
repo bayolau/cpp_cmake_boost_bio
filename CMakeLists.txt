@@ -21,11 +21,11 @@ include_directories(${OPT_INCLUDE})
 link_directories(${OPT_LIB})
 
 # regenerate config file at build time
-configure_file ( "${SRC_DIR}/BuildInfo.h.cmake.in" "${PROJECT_BINARY_DIR}/BuildInfo.h.cmake" )
+configure_file ( "${SRC_DIR}/util/BuildInfo.h.cmake.in" "${PROJECT_BINARY_DIR}/BuildInfo.h.cmake" )
 add_custom_target(buildinfo ALL
                   DEPENDS
                     ${PROJECT_BINARY_DIR}/BuildInfo.h.cmake
-                    ${SRC_DIR}/BuildInfo.h.in
+                    ${SRC_DIR}/util/BuildInfo.h.in
                   COMMAND ${CMAKE_COMMAND} -P ${PROJECT_BINARY_DIR}/BuildInfo.h.cmake)
 include_directories("${PROJECT_BINARY_DIR}")
 

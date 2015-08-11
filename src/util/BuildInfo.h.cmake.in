@@ -30,6 +30,6 @@ endif()
 
 # write CMake settings to a header
 configure_file (
-  "${SRC_DIR}/BuildInfo.h.in"
+  "${SRC_DIR}/util/BuildInfo.h.in"
   "${PROJECT_BINARY_DIR}/BuildInfo.h"
   )
