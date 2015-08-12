@@ -28,6 +28,8 @@ if (GIT_UNCOMMITED_CHANGE)
   set (GIT_DIRTY_FLAG "-dirty")
 endif()
 
+file(REMOVE "${PROJECT_BINARY_DIR}/BuildInfo.h")
+
 # write CMake settings to a header
 configure_file (
   "${SRC_DIR}/util/BuildInfo.h.in"
