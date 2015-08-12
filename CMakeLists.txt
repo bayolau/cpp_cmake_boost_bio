@@ -14,6 +14,7 @@ set (CMAKE_CXX_STANDARD 11)
 # directory structures
 set (SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 set (OPT_DIR ${PROJECT_SOURCE_DIR}/opt)
+include_directories(${SRC_DIR})
 
 set (OPT_INCLUDE ${OPT_DIR}/include)
 set (OPT_LIB ${OPT_DIR}/lib)

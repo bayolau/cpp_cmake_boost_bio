@@ -16,7 +16,7 @@ endif (USE_SEQAN)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a)
 
-add_executable(bare bare.cpp util/ProgramOptions.h)
+add_executable(bare bare.cpp util/ProgramOptions.h modules/dispatch.h modules/dispatch.cpp modules/sandbox/main.h modules/sandbox/main.cpp)
 add_dependencies(bare buildinfo)
 target_link_libraries(bare ${EXTRA_LIBS})
 
