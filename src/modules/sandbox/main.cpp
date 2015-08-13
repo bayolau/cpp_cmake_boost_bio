@@ -27,16 +27,17 @@
 
 namespace {
 struct BareOptions : public bayolau::ProgramOptions {
-  BareOptions(int argc, const char* const argv[]) {
+  BareOptions(const bayolau::CommandLine& cl) {
     this->AddPositional("module", 1);
     this->Add()("module,m", bayolau::bpo::value<std::string>(&module_)->required(), "module");
     this->Add()("integer,i", bayolau::bpo::value<int>(&integer_)->required(), "integer");
-    this->Parse(argc, argv);
+    this->Parse(cl);
   }
 
   int integer() const {
     return integer_;
   }
+
 private:
   int integer_;
   std::string module_;
@@ -44,8 +45,8 @@ private:
 }
 namespace bayolau {
 namespace sandbox {
-int main(int argc, const char* const argv[]) {
-  BareOptions po(argc, argv);
+int main(const bayolau::CommandLine& cl) {
+  BareOptions po(cl);
   if (not po.valid() or po.help()) {
     std::cout << po << std::endl;
     return 1;

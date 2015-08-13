@@ -5,7 +5,6 @@ set (VERSION_MAJOR 1)
 set (VERSION_MINOR 0)
 
 # modules/libraries selection
-option (USE_FOO "Use foo" ON)
 option (USE_SEQAN "Use seqan library" ON)
 
 # language settings

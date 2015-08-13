@@ -5,13 +5,14 @@
 #include "dispatch.h"
 #include "util/ProgramOptions.h"
 #include "modules/sandbox/main.h"
+#include "modules/bamtest/main.h"
 
 namespace {
 struct ModuleOptions : public bayolau::ProgramOptions {
-  ModuleOptions(int argc, const char* const argv[]) {
-    this->AddPositional("module", 1);
+  ModuleOptions(bayolau::CommandLine cl) {
     this->Add()("module,m", bayolau::bpo::value<std::string>(&module_)->required(), "module");
-    this->Parse(std::min(2, argc), argv, true);
+    this->AddPositional("module", 1);
+    this->Parse(cl, 1, true);
   }
 
   const std::string& module() const {
@@ -30,17 +31,24 @@ const char* ModuleUsage() {
 namespace bayolau {
 
 int Dispatch(int argc, const char* const argv[]) {
-  ModuleOptions mo(argc, argv);
+  bayolau::CommandLine cl(argc, argv);
+  std::cout << cl << std::endl;
+  ModuleOptions mo(cl);
   if (not mo.valid() or mo.help()) {
     std::cout << ModuleUsage() << std::endl;
     return 1;
   }
   std::cout << "module is " << mo.module() << std::endl;
   if (mo.module() == "sandbox") {
-    return bayolau::sandbox::main(argc, argv);
-
+    return bayolau::sandbox::main(cl);
   }
-  return 0;
+  else if (mo.module() == "bamtest") {
+    return bayolau::bamtest::main(cl);
+  }
+  else {
+    std::cerr << "unknown module " << ModuleUsage() << std::endl;
+  }
+  return 1;
 }
 
 }

@@ -2,15 +2,15 @@
 // Created by Bayo Lau on 8/11/15.
 //
 
-#ifndef MODULES_SANDBOX_MAIN_H
-#define MODULES_SANDBOX_MAIN_H
+#ifndef MODULES_BAMTEST_MAIN_H
+#define MODULES_BAMTEST_MAIN_H
 
 #include "util/ProgramOptions.h"
 
 namespace bayolau {
-namespace sandbox {
+namespace bamtest {
 int main(const bayolau::CommandLine&);
 }
 }
 
-#endif //MODULES_SANDBOX_MAIN_H
+#endif //MODULES_BAMTEST_MAIN_H

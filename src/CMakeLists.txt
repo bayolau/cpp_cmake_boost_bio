@@ -1,9 +1,3 @@
-if (USE_FOO)
-  include_directories("${SRC_DIR}/foo")
-  add_subdirectory(foo)
-  set (EXTRA_LIBS ${EXTRA_LIBS} foo)
-endif (USE_FOO)
-
 if (USE_SEQAN)
   message(STATUS "using seqan" )
   include_directories("${OPT_DIR}/seqan/include")
@@ -14,9 +8,16 @@ if (USE_SEQAN)
   set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lbz2 -lz" )
 endif (USE_SEQAN)
 
+add_subdirectory("modules")
+set (EXTRA_LIBS ${EXTRA_LIBS} modules)
+add_subdirectory("modules/bamtest")
+set (EXTRA_LIBS ${EXTRA_LIBS} bamtest)
+add_subdirectory("modules/sandbox")
+set (EXTRA_LIBS ${EXTRA_LIBS} sandbox)
+
 set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a)
 
-add_executable(bare bare.cpp util/ProgramOptions.h modules/dispatch.h modules/dispatch.cpp modules/sandbox/main.h modules/sandbox/main.cpp)
+add_executable(bare bare.cpp)
 add_dependencies(bare buildinfo)
 target_link_libraries(bare ${EXTRA_LIBS})
 

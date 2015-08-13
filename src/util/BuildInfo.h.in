@@ -1,7 +1,6 @@
 #ifndef BUILDINFO_H
 #define BUILDINFO_H
 
-#cmakedefine USE_FOO
 #cmakedefine USE_SEQAN
 
 namespace bayolau {
