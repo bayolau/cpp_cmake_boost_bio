@@ -1,0 +1,1 @@
+add_library(seqtest main.cpp)
