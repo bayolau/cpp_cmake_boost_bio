@@ -14,6 +14,8 @@ add_subdirectory("modules/bamtest")
 set (EXTRA_LIBS ${EXTRA_LIBS} bamtest)
 add_subdirectory("modules/sandbox")
 set (EXTRA_LIBS ${EXTRA_LIBS} sandbox)
+add_subdirectory("modules/vcftest")
+set (EXTRA_LIBS ${EXTRA_LIBS} vcftest)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a)
 

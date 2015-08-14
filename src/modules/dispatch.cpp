@@ -6,6 +6,7 @@
 #include "util/ProgramOptions.h"
 #include "modules/sandbox/main.h"
 #include "modules/bamtest/main.h"
+#include "modules/vcftest/main.h"
 
 namespace {
 struct ModuleOptions : public bayolau::ProgramOptions {
@@ -44,6 +45,9 @@ int Dispatch(int argc, const char* const argv[]) {
   }
   else if (mo.module() == "bamtest") {
     return bayolau::bamtest::main(cl);
+  }
+  else if (mo.module() == "vcftest") {
+    return bayolau::vcftest::main(cl);
   }
   else {
     std::cerr << "unknown module " << ModuleUsage() << std::endl;
