@@ -1,11 +1,14 @@
 //
 // Created by Bayo Lau on 8/11/15.
 //
+
 #include <iostream>
-#include <seqan/seq_io.h>
 
 #include "main.h"
 #include "Options.h"
+
+#include "bio/Fai.h"
+
 
 namespace bayolau {
 namespace faitest {
@@ -20,39 +23,16 @@ int main(const bayolau::CommandLine& cl) {
 
   std::cout << "faitest operating with " << po.input() << std::endl;
 
-  seqan::FaiIndex faiIndex;
-  if(!open(faiIndex, po.input().c_str())) {
-    std::cerr << "Could not open " << po.input() << ".fai" << std::endl;
-    return 1;
+  bio::Fai lookup(po.input());
+  std::cout << "seqNameStore size " << lookup.size() << std::endl;
+
+  for (auto itr = lookup.name_begin(); itr != lookup.name_end(); ++itr) {
+    std::cout << *itr << " " << lookup.size(*itr) << "\n";
   }
 
-  typedef seqan::Iterator< decltype(faiIndex.seqNameStore) >::Type Itr;
-  Itr b = begin(faiIndex.seqNameStore);
-  Itr e = end(faiIndex.seqNameStore);
-  std::cout << "seqNameStore size " << std::distance(b,e) << "\n";
-  for(Itr itr = b; itr != e ; ++itr) {
-    std::cout << *itr << "\n";
-  }
-
-  seqan::CharString second = value(faiIndex.seqNameStore,1);
-  std::cout << "second entry " << second << std::endl;
-
-  unsigned idx = -1;
-  if(not getIdByName(idx, faiIndex, second)) {
-    std::cerr << "Could not get first entry index" << std::endl;
-  }
-  std::cout << "second index " << idx << std::endl;
-
-  unsigned seqLength = sequenceLength(faiIndex, idx);
-  std::cout << "second length " << seqLength << std::endl;
-
-  seqan::CharString buffer;
-  readRegion(buffer, faiIndex, idx, 0, 1000);
-  std::cout << buffer << std::endl;
-
-//  readRegion(buffer, faiIndex, idx);
-//  std::cout << buffer << std::endl;
-
+  const auto& first = *lookup.name_begin();
+  std::cout << "first entry " << first << " (" << lookup.size(first) << ")" << std::endl;
+  std::cout << *lookup.get<seqan::Dna5String>(first, 100, 200) << std::endl;
   return 0;
 }
 }

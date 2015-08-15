@@ -13,4 +13,4 @@ int main(const bayolau::CommandLine&);
 }
 }
 
-#endif //MODULES_BAMTEST_MAIN_H
+#endif //MODULES_SEQTEST_MAIN_H
