@@ -18,6 +18,8 @@ add_subdirectory("modules/vcftest")
 set (EXTRA_LIBS ${EXTRA_LIBS} vcftest)
 add_subdirectory("modules/seqtest")
 set (EXTRA_LIBS ${EXTRA_LIBS} seqtest)
+add_subdirectory("modules/faitest")
+set (EXTRA_LIBS ${EXTRA_LIBS} faitest)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a)
 

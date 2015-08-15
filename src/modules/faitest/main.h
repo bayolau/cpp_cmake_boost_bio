@@ -1,0 +1,16 @@
+//
+// Created by Bayo Lau on 8/11/15.
+//
+
+#ifndef MODULES_FAITEST_MAIN_H
+#define MODULES_FAITEST_MAIN_H
+
+#include "util/ProgramOptions.h"
+
+namespace bayolau {
+namespace faitest {
+int main(const bayolau::CommandLine&);
+}
+}
+
+#endif //MODULES_FAITEST_MAIN_H
