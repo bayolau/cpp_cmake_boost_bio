@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <seqan/seq_io.h>
+#include "util/Logging.h"
 
 namespace bayolau {
 namespace bio {
@@ -42,9 +43,10 @@ struct Fai {
   }
 
   Fai(const std::string& file) : handler_(), open_(false) {
+    LOG(info) << "opening " << file;
     open_ = open(handler_, file.c_str());
     if (!open_) {
-      std::cerr << "Could not open " << file << " with .fai index" << std::endl;
+      LOG(error) << "Could not open " << file << " with .fai index" << std::endl;
     }
   }
 
@@ -92,7 +94,7 @@ private:
   int64_t getIdByName(const String_& name) const {
     int64_t idx;
     if (not seqan::getIdByName(idx, handler_, name)) {
-      std::cerr << "Could not get first entry index" << std::endl;
+      LOG(error) << "Could not get first entry index" << std::endl;
       return -1;
     }
     return idx;
