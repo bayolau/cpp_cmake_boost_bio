@@ -4,3 +4,7 @@
 [submodule "opt/bamtools"]
 	path = opt/bamtools
 	url = https://github.com/pezmaster31/bamtools.git
+[submodule "opt/seqan"]
+	path = opt/seqan
+	url = https://github.com/bayolau/seqan.git
+	branch = bayolau
