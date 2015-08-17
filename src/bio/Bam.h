@@ -59,11 +59,13 @@ struct BamRecord {
     ref_end_ = record_.beginPos + getAlignmentLengthInRef(record_);
   };
 
+  decltype(Impl::rID) ref_id() const { return record_.rID; }
+
   decltype(Impl::beginPos) ref_begin0() const { return record_.beginPos; }
 
   decltype(Impl::beginPos) ref_end0() const { return ref_end_; }
 
-  Locus locus() const { return Locus(record_.rID, ref_begin0(), ref_end0()); } //rvo
+  Locus locus() const { return Locus(ref_id(), ref_begin0(), ref_end0()); } //rvo
 
   Impl const& record() const { return record_; }
 
@@ -85,6 +87,9 @@ class BamReader {
   seqan::BamHeader header_;
   bio::References<decltype(seqan::BamAlignmentRecord::qName), Seq_> refs_;
 public:
+  using value_type = BamRecord<Seq_>;
+  using const_pointer = std::unique_ptr<const value_type>;
+
   BamReader(const std::string& filename, const std::string& fai)
           : in_(filename.c_str()), header_(), refs_(fai) {
     readHeader(header_, in_);
@@ -96,9 +101,9 @@ public:
 
   BamReader& operator=(const BamReader&) = delete;
 
-  std::unique_ptr<BamRecord<Seq_> > Next() {
+  const_pointer Next() {
     if (atEnd(in_)) return nullptr;
-    return std::unique_ptr<BamRecord<Seq_> >(new BamRecord<Seq_>(in_, refs_));
+    return const_pointer(new BamRecord<Seq_>(in_, refs_));
   }
 };
 

@@ -29,62 +29,65 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 //
-// Created by Bayo Lau on 8/15/15.
+// Created by Bayo Lau on 8/17/15.
 //
 
-#ifndef BIO_REFERENCES_H
-#define BIO_REFERENCES_H
-#include <map>
-#include "Fai.h"
-#include "util/Logging.h"
+#ifndef BIO_LOCUSWINDOW_H
+#define BIO_LOCUSWINDOW_H
+
+#include <iostream>
 
 namespace bayolau {
 namespace bio {
+template<class Generator>
+struct LocusWindow {
+  using const_pointer = typename Generator::const_pointer;
+  using value_type = typename Generator::value_type;
 
-template<class String_, class Seq_>
-struct References {
-  using Seq = Seq_;
-  using SeqPtr = std::shared_ptr<const Seq_>; // shared_ptr required by erase()
+  explicit LocusWindow(Generator& gen) : gen_(gen), next_(gen_.Next()), list_() { LoadOnFirst(); }
 
-  explicit References(const std::string& filename) : handler_(filename), map_() { }
-
-  References(const References& filename) = delete;
-
-  References& operator=(const References& filename) = delete;
-
-  References() = delete;
-
-  /**
-   * @brief make sure a reference is in cache, then return a pointer
-   * \warning not thread safe
-   * @param[in] name sequence name
-   * @return a pointer to sequence, null if it cannot be found
-   */
-  SeqPtr operator[](const String_& name) const {
-    auto itr = map_.find(name);
-    if (itr == map_.end()) {
-      LOG(info) << "loading " << std::string(begin(name),end(name));
-      SeqPtr ptr(handler_.get<Seq>(name));
-      return map_.insert(std::make_pair(name,ptr)).first->second;
-    }
-    return itr->second;
+  template<class Visitor>
+  void Apply(Visitor& visitor) const {
+    visitor(list_.begin(), list_.end());
   }
 
-  /**
-   * @brief remove reference of name, deallocation is deffered until shared_ptr is deallocated
-   * \warning not thread safe
-   * @param[in] name sequence name
-   */
-  void erase(const String_& name) {
-    auto itr = map_.find(name);
-    if (itr != map_.end()) map_.erase(itr);
+  explicit operator bool() const { return not list_.empty() or next_; }
+
+  LocusWindow& operator++() {
+    if (not list_.empty()) { list_.pop_front(); }
+    LoadOnFirst();
+    return *this;
   }
 
 private:
-  const Fai handler_;
-  mutable std::map<String_, SeqPtr> map_;
-};
+  Generator& gen_;
+  const_pointer next_;
+  std::list<const_pointer> list_;
 
+  void LoadOnFirst() {
+    if (list_.empty()) FeedList();
+
+    if (not list_.empty()) {
+      const auto& locus = list_.front()->locus();
+      while (next_) {
+        const auto& next_locus = next_->locus();
+        if (next_locus.ref() == locus.ref() and next_locus.beg() < locus.end()) {
+          FeedList();
+        }
+        else {
+          break;
+        }
+      }
+    }
+  }
+
+  void FeedList() {
+    if (next_) {
+      list_.push_back(std::move(next_));
+      next_ = gen_.Next();
+    }
+  }
+};
 }
 }
-#endif //REFERENCES_H
+#endif //BIO_LOCUSWINDOW_H

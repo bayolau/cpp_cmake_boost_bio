@@ -3,12 +3,29 @@
 //
 #include <iostream>
 #include "bio/Bam.h"
+#include "bio/LocusWindow.h"
 
 #include "main.h"
 #include "Options.h"
 
 namespace bayolau {
 namespace bamtest {
+
+struct PrintVisitor {
+  PrintVisitor(std::ostream& os) : os_(os) { }
+
+  template<typename Itr>
+  void operator()(Itr begin, Itr end) {
+    for (Itr itr = begin; itr != end; ++itr) {
+      Print(os_, **itr, false);
+    }
+  }
+
+private:
+  std::ostream& os_;
+};
+
+
 int main(const bayolau::CommandLine& cl) {
 
   Options po(cl);
@@ -16,15 +33,28 @@ int main(const bayolau::CommandLine& cl) {
     std::cout << po << std::endl;
     return 1;
   }
+
+  LOG(info) << "bamtest operating with BAM " << po.input();
+  LOG(info) << "bamtest operating with FAI " << po.fasta();
+
+  LOG(info) << "full list";
   using Seq = seqan::Dna5String;
-
-  std::cout << "bamtest operating with " << po.input() << std::endl;
-  std::cout << "bamtest operating with " << po.fasta() << std::endl;
-
-  bio::BamReader<Seq> reader(po.input(),po.fasta());
-  while(auto record = reader.Next()) {
-    Print(std::cout, *record, false);
+  using Generator = bio::BamReader<Seq>;
+  {
+    Generator reader(po.input(), po.fasta());
+    while (auto record = reader.Next()) {
+      Print(std::cout, *record, false);
+    }
   }
+  {
+    Generator reader(po.input(), po.fasta());
+    PrintVisitor visitor(std::cout);
+    for (bio::LocusWindow<Generator> window(reader); window; ++window) {
+      LOG(info) << "window";
+      window.Apply(visitor);
+    }
+  }
+
 
   return 0;
 }

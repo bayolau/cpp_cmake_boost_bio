@@ -42,7 +42,7 @@ struct Fai {
     return ret;
   }
 
-  Fai(const std::string& file) : handler_(), open_(false) {
+  explicit Fai(const std::string& file) : handler_(), open_(false) {
     LOG(info) << "opening " << file;
     open_ = open(handler_, file.c_str());
     if (!open_) {
