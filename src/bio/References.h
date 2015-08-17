@@ -60,7 +60,7 @@ struct References {
    * @param[in] name sequence name
    * @return a pointer to sequence, null if it cannot be found
    */
-  SeqPtr operator[](const String_& name) {
+  SeqPtr operator[](const String_& name) const {
     auto itr = map_.find(name);
     if (itr == map_.end()) {
       LOG(info) << "loading " << std::string(begin(name),end(name));
@@ -82,7 +82,7 @@ struct References {
 
 private:
   const Fai handler_;
-  std::map<String_, SeqPtr> map_;
+  mutable std::map<String_, SeqPtr> map_;
 };
 
 }
