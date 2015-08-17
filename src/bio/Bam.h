@@ -32,44 +32,51 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Created by Bayo Lau on 8/16/15.
 //
 
-#ifndef BIO_BAMRECORD_H
-#define BIO_BAMRECORD_H
+#ifndef BIO_BAM_H
+#define BIO_BAM_H
 
 #include <ostream>
 #include <seqan/bam_io.h>
 #include "References.h"
+#include "Locus.h"
 
 namespace bayolau {
 namespace bio {
 
 
 template<class Seq_>
-class BamRecord {
-private:
-  seqan::BamFileIn const& bam_;
-  seqan::BamAlignmentRecord record_;
-  using RefPtr = typename bio::References<decltype(seqan::BamAlignmentRecord::qName), Seq_>::SeqPtr;
-  RefPtr ref_;
-public:
+struct BamRecord {
+  using Impl = seqan::BamAlignmentRecord;
+  using Locus = Locus<decltype(Impl::rID), decltype(Impl::beginPos)>;
+  using RefPtr = typename bio::References<decltype(Impl::qName), Seq_>::SeqPtr;
+
   template<class String_>
-  BamRecord(seqan::BamFileIn& bam, bio::References<String_, Seq_> const& refs) : bam_(bam), record_(), ref_(nullptr) {
+  BamRecord(seqan::BamFileIn& bam, bio::References<String_, Seq_> const& refs)
+          : bam_(bam), record_(), ref_(nullptr), ref_end_(-1) {
     if (atEnd(bam)) return;
     readRecord(record_, bam);
     ref_ = refs[getContigName(record_, bam)];
+    ref_end_ = record_.beginPos + getAlignmentLengthInRef(record_);
   };
 
-  seqan::BamAlignmentRecord const& record() const {
-    return record_;
-  }
+  decltype(Impl::beginPos) ref_begin0() const { return record_.beginPos; }
 
-  seqan::BamFileIn const& bam() const {
-    return bam_;
-  }
+  decltype(Impl::beginPos) ref_end0() const { return ref_end_; }
+
+  Locus locus() const { return Locus(record_.rID, ref_begin0(), ref_end0()); } //rvo
+
+  Impl const& record() const { return record_; }
+
+  seqan::BamFileIn const& bam() const { return bam_; }
 
   // this is a shared pointer!
-  RefPtr ref() const {
-    return ref_;
-  }
+  RefPtr ref() const { return ref_; }
+
+private:
+  seqan::BamFileIn const& bam_;
+  Impl record_;
+  RefPtr ref_;
+  decltype(Impl::beginPos) ref_end_;
 };
 
 template<class Seq_>
@@ -97,13 +104,11 @@ public:
 
 template<class Seq_>
 void Print(std::ostream& os, BamRecord<Seq_> const& record, bool print_alignment) {
-  auto start = record.record().beginPos;
-  auto length = getAlignmentLengthInRef(record.record());
   os << record.record().qName
      << " " << getContigName(record.record(), record.bam())
      << "(" << getContigLength(record.record(), record.bam()) << ")"
-     << " " << start
-     << " " << start + length
+     << " " << record.ref_begin0()
+     << " " << record.ref_end0()
      << "\n";
   if (print_alignment and record.ref()) {
     seqan::Align<Seq_> align;
@@ -116,4 +121,4 @@ void Print(std::ostream& os, BamRecord<Seq_> const& record, bool print_alignment
 
 }
 }
-#endif //BIO_BAMRECORD_H
+#endif //BIO_BAM_H
