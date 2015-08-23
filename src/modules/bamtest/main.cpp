@@ -2,6 +2,10 @@
 // Created by Bayo Lau on 8/11/15.
 //
 #include <iostream>
+
+#include <seqan/store.h>
+#include <seqan/realign.h>
+
 #include "bio/Bam.h"
 #include "bio/LocusWindow.h"
 
@@ -46,6 +50,7 @@ int main(const bayolau::CommandLine& cl) {
       Print(std::cout, *record, false);
     }
   }
+  /*
   {
     Generator reader(po.input(), po.fasta());
     PrintVisitor visitor(std::cout);
@@ -54,7 +59,19 @@ int main(const bayolau::CommandLine& cl) {
       window.Apply(visitor);
     }
   }
+  {
+    seqan::FragmentStore<> store;
+    seqan::loadContigs(store, po.fasta().c_str());
 
+    seqan::BamFileIn bamFileIn(po.input().c_str());
+    readRecords(store, bamFileIn);
+    reAlignment(store,0,1,20,true);
+    seqan::AlignedReadLayout layout;
+    layoutAlignment(layout, store);
+    printAlignment(std::cout, layout, store, 0, 32637620,32640514,0, 100000);
+
+  }
+   */
 
   return 0;
 }

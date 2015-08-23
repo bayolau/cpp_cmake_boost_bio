@@ -1,3 +1,4 @@
+#seqan
 if (USE_SEQAN)
   message(STATUS "using seqan" )
   include_directories("${OPT_DIR}/seqan/include")
@@ -8,23 +9,13 @@ if (USE_SEQAN)
   set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lbz2 -lz" )
 endif (USE_SEQAN)
 
+#boost
 ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 
-add_subdirectory("modules")
-set (EXTRA_LIBS ${EXTRA_LIBS} modules)
-add_subdirectory("modules/bamtest")
-set (EXTRA_LIBS ${EXTRA_LIBS} bamtest)
-add_subdirectory("modules/sandbox")
-set (EXTRA_LIBS ${EXTRA_LIBS} sandbox)
-add_subdirectory("modules/vcftest")
-set (EXTRA_LIBS ${EXTRA_LIBS} vcftest)
-add_subdirectory("modules/seqtest")
-set (EXTRA_LIBS ${EXTRA_LIBS} seqtest)
-add_subdirectory("modules/faitest")
-set (EXTRA_LIBS ${EXTRA_LIBS} faitest)
+#automatically discover modules/<name> and compile modules/<name>/main.cpp into a library named <name>
+include(modules/modules.cmake)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a libboost_log.a )
-
 
 add_executable(bare bare.cpp)
 add_dependencies(bare buildinfo)
