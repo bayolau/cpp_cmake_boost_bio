@@ -1,14 +1,12 @@
 # cpp_cmake_boost_bio
-self-contained c++/cmake/boost infrastructure for bioinformatics projects. ```git clone --recursive <URL>``` will clone all submodules, including Boost (395M) and SeqAn (257M). Such download can be skipped if you know what you're doing: clone without ```--recursive``` and improvise.
+self-contained c++/cmake/boost infrastructure for prototyping bioinformatics ideas.
 
-```src``` - source directory
+The point is for one to quickly add a private/public GIT submodule into ```src/modules``` for rapid development.
 
-```src/bio``` - reusable bioinformatic code
+```src/modules``` - each sub-direcotry is compiled into a module, dispatch code is automatically generated for ```bare```. see sandbox for example.
 
-```src/modules``` - a list of run-time modules
+```src/bio``` - reusable bioinformatic code structure, mostly for quick prototyping
 
-```opt``` - stores 3rd party code
+```opt``` - external code/include/lib
 
-```opt/include``` - 3rd party includes, boost should go here
-
-```opt/lib``` - 3rd-party libraries, boost should go here
+```git clone --recursive <URL>``` will clone all submodules, including Boost (395M) and SeqAn (257M). Such download can be skipped if you know what you're doing: clone without ```--recursive``` and improvise.
