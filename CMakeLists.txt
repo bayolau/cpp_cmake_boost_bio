@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.2.2)
 
+set(CMAKE_BUILD_TYPE Release)
+
 project (Bare)
 set (VERSION_MAJOR 1)
 set (VERSION_MINOR 0)
