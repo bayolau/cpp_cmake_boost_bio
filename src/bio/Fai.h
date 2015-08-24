@@ -94,7 +94,7 @@ private:
   int64_t getIdByName(const String_& name) const {
     int64_t idx;
     if (not seqan::getIdByName(idx, handler_, name)) {
-      LOG(error) << "Could not get first entry index" << std::endl;
+      LOG(error) << "Could not get first entry index";
       return -1;
     }
     return idx;

@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef BIO_REFERENCES_H
 #define BIO_REFERENCES_H
+
 #include <map>
 #include "Fai.h"
 #include "util/Logging.h"
@@ -61,11 +62,13 @@ struct References {
    * @return a pointer to sequence, null if it cannot be found
    */
   SeqPtr operator[](const String_& name) const {
+    // length() for seqan's string can blow up for some reason
+    if (std::distance(begin(name), end(name)) < 1) return nullptr;
     auto itr = map_.find(name);
     if (itr == map_.end()) {
-      LOG(info) << "loading " << std::string(begin(name),end(name));
+      LOG(info) << "loading " << std::string(begin(name), end(name));
       SeqPtr ptr(handler_.get<Seq>(name));
-      return map_.insert(std::make_pair(name,ptr)).first->second;
+      return map_.insert(std::make_pair(name, ptr)).first->second;
     }
     return itr->second;
   }

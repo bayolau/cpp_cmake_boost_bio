@@ -56,8 +56,14 @@ struct BamRecord {
     if (atEnd(bam)) return;
     readRecord(record_, bam);
     ref_ = refs[getContigName(record_, bam)];
-    ref_end_ = record_.beginPos + getAlignmentLengthInRef(record_);
+
+    ref_end_ = record_.beginPos;
+    if (ref_) {
+      ref_end_ += getAlignmentLengthInRef(record_);
+    }
   };
+
+  bool isMapped() const { return static_cast<bool>(ref_); }
 
   decltype(Impl::rID) ref_id() const { return record_.rID; }
 
@@ -95,6 +101,11 @@ public:
     readHeader(header_, in_);
   }
 
+  BamReader(std::istream& stream, const std::string& fai)
+          : in_(stream), header_(), refs_(fai) {
+    readHeader(header_, in_);
+  }
+
   BamReader() = delete;
 
   BamReader(const BamReader&) = delete;
@@ -109,13 +120,16 @@ public:
 
 template<class Seq_>
 void Print(std::ostream& os, BamRecord<Seq_> const& record, bool print_alignment) {
-  os << record.record().qName
-     << " " << getContigName(record.record(), record.bam())
-     << "(" << getContigLength(record.record(), record.bam()) << ")"
-     << " " << record.ref_begin0()
-     << " " << record.ref_end0()
-     << "\n";
-  if (print_alignment and record.ref()) {
+  os << record.record().qName;
+  if (record.isMapped()) {
+    os << " " << getContigName(record.record(), record.bam())
+    << " " << record.ref_id()
+    << "(" << getContigLength(record.record(), record.bam()) << ")"
+    << " " << record.ref_begin0()
+    << " " << record.ref_end0();
+  }
+  os << "\n";
+  if (print_alignment and record.isMapped()) {
     seqan::Align<Seq_> align;
     //pretty hard to enforce constness with seqan's class
     bamRecordToAlignment(align, const_cast<Seq_&>(*record.ref()), record.record());

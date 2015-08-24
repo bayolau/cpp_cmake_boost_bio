@@ -10,7 +10,7 @@ namespace bamtest {
 struct Options : public bayolau::ProgramOptions {
   Options(const bayolau::CommandLine& cl) {
     this->Add()("module,m", bayolau::bpo::value<std::string>(&module_)->required(), "module");
-    this->Add()("input,i", bayolau::bpo::value<std::string>(&input_)->required(), "input file");
+    this->Add()("input,i", bayolau::bpo::value<std::string>(&input_)->required(), "input file, - for stdin");
     this->Add()("fasta,f", bayolau::bpo::value<std::string>(&fasta_)->required(), "fasta file");
     this->AddPositional("module", 1);
     this->AddPositional("input", 1);

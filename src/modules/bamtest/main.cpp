@@ -38,15 +38,16 @@ int main(const bayolau::CommandLine& cl) {
     return 1;
   }
 
-  LOG(info) << "bamtest operating with BAM " << po.input();
+  LOG(info) << "bamtest operating with input " << po.input();
   LOG(info) << "bamtest operating with FAI " << po.fasta();
 
   LOG(info) << "full list";
   using Seq = seqan::Dna5String;
   using Generator = bio::BamReader<Seq>;
   {
-    Generator reader(po.input(), po.fasta());
-    while (auto record = reader.Next()) {
+    std::unique_ptr<Generator> reader(
+            po.input() == "-" ? new Generator(std::cin, po.fasta()) : new Generator(po.input(), po.fasta()));
+    while (auto record = reader->Next()) {
       Print(std::cout, *record, false);
     }
   }
