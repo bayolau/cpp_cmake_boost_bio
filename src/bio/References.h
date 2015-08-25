@@ -73,6 +73,10 @@ struct References {
     return itr->second;
   }
 
+  bool has(const String_& name) const {
+    return handler_.has(name);
+  }
+
   /**
    * @brief remove reference of name, deallocation is deffered until shared_ptr is deallocated
    * \warning not thread safe

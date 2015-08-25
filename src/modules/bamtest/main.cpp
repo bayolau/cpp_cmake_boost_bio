@@ -6,7 +6,7 @@
 #include <seqan/store.h>
 #include <seqan/realign.h>
 
-#include "bio/Bam.h"
+#include "bio/sambam/seqan/Bam.h"
 #include "bio/LocusWindow.h"
 
 #include "main.h"
@@ -42,14 +42,17 @@ int main(const bayolau::CommandLine& cl) {
   LOG(info) << "bamtest operating with FAI " << po.fasta();
 
   LOG(info) << "full list";
-  using Seq = seqan::Dna5String;
-  using Generator = bio::BamReader<Seq>;
+  using Generator = bio::BamReader<seqan::Dna5String>;
   {
     std::unique_ptr<Generator> reader(
             po.input() == "-" ? new Generator(std::cin, po.fasta()) : new Generator(po.input(), po.fasta()));
-    while (auto record = reader->Next()) {
-      Print(std::cout, *record, false);
+    size_t count = 0;
+    if (auto record = reader->Next()) {
+      do {
+        Print(std::cout, *record, false);
+      } while (record->load(*reader));
     }
+    std::cout << "number of records " << count << std::endl;
   }
   /*
   {
@@ -60,6 +63,8 @@ int main(const bayolau::CommandLine& cl) {
       window.Apply(visitor);
     }
   }
+   */
+  /*
   {
     seqan::FragmentStore<> store;
     seqan::loadContigs(store, po.fasta().c_str());

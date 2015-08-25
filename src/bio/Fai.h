@@ -56,6 +56,17 @@ struct Fai {
    * @return length
    */
   template<class String_>
+  bool has(const String_& name) const {
+    const int64_t idx = getIdByName(name);
+    return idx >= 0;
+  }
+
+  /**
+   * @brief get the length of the specified sequence
+   * @param[in] name sequence name
+   * @return length
+   */
+  template<class String_>
   uint64_t size(const String_& name) const {
     const int64_t idx = getIdByName(name);
     if (idx < 0) return 0;

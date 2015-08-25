@@ -40,6 +40,9 @@ namespace bio {
 template<class T>
 struct Trait;
 
+template<class T>
+struct SeqBase;
+
 }
 }
 #endif //FORWARD_H
