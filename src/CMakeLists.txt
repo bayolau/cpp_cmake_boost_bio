@@ -19,6 +19,9 @@ set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a libboost_log.a )
 
 add_executable(bare bare.cpp)
 add_dependencies(bare buildinfo)
+if(TARGET boost)
+  add_dependencies(bare boost)
+endif(TARGET boost)
 target_link_libraries(bare ${EXTRA_LIBS})
 
 install (TARGETS bare DESTINATION bin)
