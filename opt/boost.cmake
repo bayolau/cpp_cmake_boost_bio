@@ -2,17 +2,13 @@
 # the point here is a dummy-proof way to build,
 # yet to avoid multiple time-consuming compilations of boost as much as possible
 
-# there are many ways of doing this, e.g. one alternative
-# is to build Boost as an External Project in the out-of-source build tree
-# but I want to play with modularizing build at some point
-
 if (BUILD_BOOST AND NOT EXISTS ${OPT_DIR}/include/boost )
-  set (MODULAR_BOOST_DIR ${OPT_DIR}/modular-boost)
-  execute_process (
-    COMMAND ./bootstrap.sh --prefix=${OPT_DIR}
-    COMMAND ./b2 headers
-    COMMAND ./b2
-    COMMAND ./b2 install
-    WORKING_DIRECTORY ${MODULAR_BOOST_DIR}
-  )
+  ExternalProject_Add( boost
+                       PREFIX ${OPT_DIR}/boost_cmake_prefix
+                       URL http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz/download
+                       CONFIGURE_COMMAND ./bootstrap.sh --prefix=${OPT_DIR}
+                       BUILD_IN_SOURCE 1
+                       BUILD_COMMAND ./b2 -j2 COMMAND ./b2 headers -j2
+                       INSTALL_COMMAND ./b2 install
+                     )
 endif (BUILD_BOOST AND NOT EXISTS ${OPT_DIR}/include/boost )

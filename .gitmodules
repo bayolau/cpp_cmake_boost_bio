@@ -1,6 +1,3 @@
-[submodule "opt/modular-boost"]
-	path = opt/modular-boost
-	url = https://github.com/boostorg/boost.git
 [submodule "opt/bamtools"]
 	path = opt/bamtools
 	url = https://github.com/pezmaster31/bamtools.git
