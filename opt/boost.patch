@@ -1,0 +1,11 @@
+--- tools/build/src/engine/build.jam	2015-08-29 00:19:20.260963470 -0700
++++ tools/build/src/engine/build.jam.new	2015-08-29 00:18:54.823258151 -0700
+@@ -923,7 +923,7 @@ if $(UNIX) = true
+     gzip -c9 "$(>)" > "$(<)"
+     }
+     actions [COPY] {
+-        cp -Rpf "$(>)" "$(<)"
++        cp -Rf "$(>)" "$(<)"
+     }
+ }
+ 
