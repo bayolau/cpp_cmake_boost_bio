@@ -104,6 +104,8 @@ private:
     return true;
   };
 
+  String const& _qname() const { return record_.qName; }
+
   Locus _locus() const { return Locus(_ref_id(), _ref_begin0(), _ref_end0()); } //rvo
 
   bool _isMapped() const { return !hasFlagUnmapped(record_); }
@@ -165,7 +167,7 @@ private:
 
 template<class Seq_>
 void Print(std::ostream& os, SeqanBamRecord<Seq_> const& record, bool print_alignment) {
-  os << record.impl().qName;
+  os << record.qname();
   if (record.isMapped()) {
     os << " " << getContigName(record.impl(), record.bam())
     << " " << record.ref_id()

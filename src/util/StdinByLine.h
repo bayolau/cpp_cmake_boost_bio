@@ -29,55 +29,49 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 //
-// Created by laub2 on 8/24/15.
+// Created by laub2 on 8/27/15.
 //
 
-#ifndef SEQ_SEQBASE_H
-#define SEQ_SEQBASE_H
-
-#include "bio/Forward.h"
-
+#ifndef UTIL_STDINBYLINE_H
+#define UTIL_STDINBYLINE_H
 namespace bayolau {
-namespace bio {
 
-template<class Derived_>
-struct SeqBase {
-  using Derived = Derived_;
-  using String = typename Trait<Derived>::String;
-  using Locus = typename Trait<Derived>::Locus;
-  using Pos = typename Locus::Pos;
-  using RefId = typename Locus::Ref;
-  using RefPtr = typename Trait<Derived>::RefPtr;
+//leaving room for further optimization with a stateful singleton (it's in my head)
 
-  template<class Generator>
-  bool load(Generator& gen) { return derived()._load(gen); }
+//this is obvious not thread safe
 
-  String const& qname() const { return derived()._qname(); }
+struct StdinByLine {
+  static const size_t MIN_BUFFER_SIZE = 1000;
 
-  bool isMapped() const { return derived()._isMapped(); }
+  static bool Read(std::vector<char>& buffer) {
+    if (buffer.size() < Instance().max_length) buffer.resize(Instance().max_length);
+    size_t old_size = 0;
+    buffer.back() = '\n';
+    char* ret = std::fgets(buffer.data(), buffer.size(), stdin);
+    if (ret == NULL) return false;
+    while (ret != NULL and buffer.back() == '\0') {
+      old_size = buffer.size();
+      buffer.resize(old_size * 2);
+      buffer.back() = '\n';
+      ret = std::fgets(buffer.data() + old_size - 1, old_size + 1, stdin);
+    }
+    Instance().max_length = std::max(Instance().max_length, buffer.size());
+    return true;
+  }
 
-  Pos size() const { return derived()._size(); }
+  StdinByLine(StdinByLine const& other) = delete;
 
-  Locus locus() const { return derived()._locus(); }
+  StdinByLine& operator=(StdinByLine const& other) = delete;
 
-  RefId ref_id() const { return derived()._ref_id(); }
+private:
+  static StdinByLine& Instance() {
+    static StdinByLine instance;
+    return instance;
+  }
 
-  Pos ref_begin0() const { return derived()._ref_begin0(); }
+  StdinByLine() : max_length(MIN_BUFFER_SIZE) { };
 
-  Pos ref_end0() const { return derived()._ref_end0(); }
-
-  RefPtr ref() const { return derived()._ref(); }
-
-  // this is temporary
-  typename Trait<Derived>::Impl const& impl() const { return derived()._impl(); }
-
-  Derived& derived() { return static_cast<Derived&>(*this); }
-
-  Derived const& derived() const { return static_cast<Derived const&>(*this); }
-
-  virtual ~SeqBase() { };
+  size_t max_length;
 };
-
 }
-}
-#endif //SEQ_SEQBASE_H
+#endif //STDINBYLINE_H
