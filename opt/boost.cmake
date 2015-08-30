@@ -7,7 +7,7 @@ cmake_host_system_information(RESULT NCPU QUERY NUMBER_OF_PHYSICAL_CORES)
 
 set( B2_OPTIONS -sBZIP2_INCLUDE=${OPT_DIR}/include -sBZIP2_LIBPATH=${OPT_DIR}/lib -j${NCPU} )
 
-if (BUILD_BOOST AND NOT EXISTS ${OPT_DIR}/include/boost )
+if (BUILD_BOOST)
   ExternalProject_Add( boost
                        DEPENDS bzip2
                        PREFIX ${OPT_DIR}/boost_cmake_prefix
@@ -19,4 +19,4 @@ if (BUILD_BOOST AND NOT EXISTS ${OPT_DIR}/include/boost )
                        INSTALL_COMMAND ./b2 install
                      )
 
-endif (BUILD_BOOST AND NOT EXISTS ${OPT_DIR}/include/boost )
+endif (BUILD_BOOST)

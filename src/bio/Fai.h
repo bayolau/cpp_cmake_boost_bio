@@ -15,6 +15,8 @@ namespace bio {
 struct Fai {
   using NameItr = seqan::Iterator<const seqan::StringSet<seqan::CharString> >::Type;
 
+  Fai(Fai&& other) = default;
+
   Fai() = delete;
 
   Fai(const Fai&) = delete;

@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 //
-// Created by laub2 on 8/27/15.
+// Created by bayolau on 8/27/15.
 //
 
 #include <utility>
@@ -37,7 +37,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "bio/Forward.h"
 #include "bio/References.h"
 #include "bio/seq/SeqBase.h"
-#include "util/StdinByLine.h"
 
 #ifndef BIO_SAMBAM_LOCAL_SAM_H
 #define BIO_SAMBAM_LOCAL_SAM_H
@@ -48,43 +47,44 @@ template<class Seq_>
 struct RawSAMRecord;
 
 template<class Seq_>
-struct Trait<RawSAMRecord<Seq_>> {
-  using Seq = Seq_;
+struct Trait<RawSAMRecord<Seq_> > {
   using Impl = std::vector<char>;
   using String = char const*;
   using Pos = uint32_t;
   using RefId = String;
-  using Refs = typename bio::References<String, Seq>;
-  using RefPtr = typename bio::References<String, Seq>::SeqPtr;
-};
-
-struct RawSAMHeader {
-  using Line = std::vector<char>;
-
-  template<class T>
-  void push_back(T&& line) { lines_.push_back(std::forward<T>(line)); }
-
-private:
-  std::list<Line> lines_;
+  using Refs = typename bio::References<std::string, Seq_>;
+  using RefPtr = typename Refs::SeqPtr;
 };
 
 template<class Seq_>
 struct RawSAMRecord : SeqBase<RawSAMRecord<Seq_> > {
-  using Line = std::vector<char>;
+  using Buffer = std::vector<char>;
   using String = typename Trait<RawSAMRecord>::String;
 
-  RawSAMRecord(Line&& line) : line_(std::move(line)) { init(); }
+  explicit RawSAMRecord(Buffer&& line) : line_(std::move(line)) { init(); }
 
-  Line& line() { return line_; }
+  RawSAMRecord(RawSAMRecord&& other) = default;
 
-  Line const& line() const { return line_; }
+  RawSAMRecord(RawSAMRecord const&) = delete;
+
+  RawSAMRecord& operator=(RawSAMRecord const&) = delete;
+
+  RawSAMRecord() = delete;
+
+  Buffer& line() { return line_; }
+
+  Buffer const& line() const { return line_; }
 
 private:
   friend struct SeqBase<RawSAMRecord>;
 
   String const& _qname() const { return qname_; }
 
-  bool _isMapped() const { return 0x4 & flag_; }
+  typename Trait<RawSAMRecord>::RefId _ref_id() const { return rname_; }
+
+  typename Trait<RawSAMRecord>::Pos _ref_begin0() const { return pos0_; }
+
+  bool _isMapped() const { return not (0x4 & flag_); }
 
   template<class Generator>
   bool _load(Generator& gen) {
@@ -108,7 +108,7 @@ private:
     curr = strchr(curr, '\t');
     *curr++ = '\0'; // end of RNAME
 
-    pos_ = strtoul(curr, &curr, 10);
+    pos0_ = strtoul(curr, &curr, 10) - 1;
     *curr++ = '\0';
 
     mapq_ = static_cast<unsigned char>(strtoul(curr, &curr, 10));
@@ -139,7 +139,7 @@ private:
     optional_ = curr;
   }
 
-  Line line_;
+  Buffer line_;
   String qname_;
   String rname_;
   String cigar_;
@@ -148,66 +148,26 @@ private:
   String qual_;
   String optional_;
 
-  uint32_t pos_;
+  uint32_t pos0_;
   uint32_t pnext_;
   int32_t tlen_;
   unsigned short flag_;
   unsigned char mapq_;
 };
 
-
-template<class Seq_>
-struct StdinSAMReader {
-  using Seq = Seq_;
-  using Refs = References<char const* const, Seq>;
-  using value_type = RawSAMRecord<Seq>;
-  using pointer = std::unique_ptr<value_type>;
-
-  StdinSAMReader(const std::string& fai) : header_(), refs_(fai) { }
-
-  StdinSAMReader() = delete;
-
-  StdinSAMReader(const StdinSAMReader&) = delete;
-
-  StdinSAMReader& operator=(const StdinSAMReader&) = delete;
-
-  bool load(typename value_type::Line& buffer) {
-    while (bayolau::StdinByLine::Read(buffer)) {
-      if (buffer.size() > 1) { // longer than null
-        if (buffer[0] != '@') {
-          return true;
-        }
-        else {
-          header_.push_back(buffer); // make a copy into header, this is rare
-        }
-      }
-    }
-    return false;
-  }
-
-  pointer Next() {
-    typename value_type::Line buffer;
-    pointer ret;
-    return load(buffer) ? pointer(new value_type(std::move(buffer))) : nullptr;
-  }
-
-private:
-  RawSAMHeader header_;
-  Refs refs_;
-};
-
 template<class Seq_>
 void Print(std::ostream& os, RawSAMRecord<Seq_> const& record, bool print_alignment) {
   os << "record: " << record.qname();
-  /*
   if (record.isMapped()) {
-    os << " " << getContigName(record.impl(), record.bam())
-    << " " << record.ref_id()
-    << "(" << getContigLength(record.impl(), record.bam()) << ")"
+    os << " " << record.ref_id()
     << " " << record.ref_begin0()
-    << " " << record.ref_end0();
+      /*
+        << " " << getContigName(record.impl(), record.bam())
+        << "(" << getContigLength(record.impl(), record.bam()) << ")"
+        << " " << record.ref_end0();
+       */
+            ;
   }
-   */
   os << "\n";
   if (print_alignment and record.isMapped()) {
     /*

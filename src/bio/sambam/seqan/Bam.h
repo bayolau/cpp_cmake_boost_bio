@@ -48,7 +48,6 @@ struct SeqanBamRecord;
 
 template<class Seq_>
 struct Trait<SeqanBamRecord<Seq_> > {
-  using Seq = Seq_;
   using Impl = seqan::BamAlignmentRecord;
   using String = decltype(Impl::qName);
   using Pos = decltype(Impl::beginPos);
@@ -59,17 +58,24 @@ struct Trait<SeqanBamRecord<Seq_> > {
 
 template<class Seq_>
 struct SeqanBamRecord : public SeqBase<SeqanBamRecord<Seq_> > {
-  using Seq = typename Trait<SeqanBamRecord>::Seq;
   using Impl = typename Trait<SeqanBamRecord>::Impl;
   using String = typename Trait<SeqanBamRecord>::String;
   using Refs = typename Trait<SeqanBamRecord>::Refs;
   using RefPtr = typename Trait<SeqanBamRecord>::RefPtr;
 
-  SeqanBamRecord(Refs& refs)
+  explicit SeqanBamRecord(Refs& refs)
           : record_(), cname_(), bam_(nullptr), refs_(refs), ref_end_(-1), mapped_(false) { }
 
   SeqanBamRecord(seqan::BamFileIn& bam, Refs& refs)
           : record_(), cname_(), bam_(nullptr), refs_(refs), ref_end_(-1), mapped_(false) { _load(bam); };
+
+  SeqanBamRecord(SeqanBamRecord&& other) = default;
+
+  SeqanBamRecord(SeqanBamRecord const&) = delete;
+
+  SeqanBamRecord& operator=(SeqanBamRecord const&) = delete;
+
+  SeqanBamRecord() = delete;
 
   void clear() {
     seqan::clear(record_);
@@ -125,41 +131,6 @@ private:
   Refs& refs_;
   decltype(Impl::beginPos) ref_end_;
   bool mapped_;
-};
-
-template<class Seq_>
-struct BamReader {
-  using Refs = bio::References<decltype(seqan::BamAlignmentRecord::qName), Seq_>;
-  using value_type = SeqanBamRecord<Seq_>;
-  using pointer = std::unique_ptr<value_type>;
-
-  BamReader(const std::string& filename, const std::string& fai)
-          : in_(filename.c_str()), header_(), refs_(fai) {
-    readHeader(header_, in_);
-  }
-
-  BamReader(std::istream& stream, const std::string& fai)
-          : in_(stream), header_(), refs_(fai) {
-    readHeader(header_, in_);
-  }
-
-  BamReader() = delete;
-
-  BamReader(const BamReader&) = delete;
-
-  BamReader& operator=(const BamReader&) = delete;
-
-  pointer Next() {
-    if (atEnd(in_)) return nullptr;
-    return pointer(new SeqanBamRecord<Seq_>(in_, refs_));
-  }
-
-  seqan::BamFileIn& impl() { return in_; }
-
-private:
-  seqan::BamFileIn in_;
-  seqan::BamHeader header_;
-  Refs refs_;
 };
 
 template<class Seq_>

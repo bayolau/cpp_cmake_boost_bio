@@ -6,8 +6,12 @@
 #include <seqan/store.h>
 #include <seqan/realign.h>
 
+#include "bio/References.h"
+
 #include "bio/sambam/seqan/Bam.h"
+#include "bio/sambam/seqan/ReadBAM.h"
 #include "bio/sambam/local/Sam.h"
+#include "bio/sambam/local/StdinSAM.h"
 //#include "bio/LocusWindow.h"
 #include "util/Logging.h"
 
@@ -28,7 +32,7 @@ struct Test {
     size_t count = 0;
     if (auto record = reader.Next()) {
       do {
-        Print(std::cerr,*record, false);
+        Print(std::cerr, *record, false);
         ++count;
       } while (record->load(reader));
     }
@@ -53,15 +57,16 @@ int main(const bayolau::CommandLine& cl) {
   if (po.input() == "-") {
 //    using Generator = bayolau::bio::BamReader<seqan::Dna5String>;
 //    Generator reader(std::cin, po.fasta());
-    using Generator = bayolau::bio::StdinSAMReader<seqan::Dna5String>;
+    using Record = bio::RawSAMRecord<seqan::Dna5String>;
+    using Generator = bio::StdinSAM<Record>;
     Generator reader(po.fasta());
     Test::Run(reader);
   }
   else {
-    using Generator = bayolau::bio::BamReader<seqan::Dna5String>;
+    using Record = bio::SeqanBamRecord<seqan::Dna5String>;
+    using Generator = bio::BamReader<Record>;
     Generator reader(po.input(), po.fasta());
     Test::Run(reader);
-
   }
 //  size_t count = 0;
 //  for (std::vector<char> buffer; StdinByLine::Read(buffer);) {

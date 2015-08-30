@@ -7,6 +7,7 @@
 #include <seqan/realign.h>
 
 #include "bio/sambam/seqan/Bam.h"
+#include "bio/sambam/seqan/ReadBAM.h"
 #include "bio/LocusWindow.h"
 
 #include "main.h"
@@ -42,7 +43,8 @@ int main(const bayolau::CommandLine& cl) {
   LOG(info) << "bamtest operating with FAI " << po.fasta();
 
   LOG(info) << "full list";
-  using Generator = bio::BamReader<seqan::Dna5String>;
+  using Record = bio::SeqanBamRecord<seqan::Dna5String>;
+  using Generator = bio::BamReader<Record>;
   {
     std::unique_ptr<Generator> reader(
             po.input() == "-" ? new Generator(std::cin, po.fasta()) : new Generator(po.input(), po.fasta()));

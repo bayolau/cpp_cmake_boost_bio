@@ -44,10 +44,13 @@ namespace bio {
 
 template<class String_, class Seq_>
 struct References {
+  using String = String_;
   using Seq = Seq_;
   using SeqPtr = std::shared_ptr<const Seq_>; // shared_ptr required by erase()
 
   explicit References(const std::string& filename) : handler_(filename), map_() { }
+
+  References(References&& other) = default;
 
   References(const References& filename) = delete;
 
@@ -61,7 +64,7 @@ struct References {
    * @param[in] name sequence name
    * @return a pointer to sequence, null if it cannot be found
    */
-  SeqPtr operator[](const String_& name) const {
+  SeqPtr operator[](const String& name) const {
     // length() for seqan's string can blow up for some reason
     if (std::distance(begin(name), end(name)) < 1) return nullptr;
     auto itr = map_.find(name);
@@ -73,7 +76,7 @@ struct References {
     return itr->second;
   }
 
-  bool has(const String_& name) const {
+  bool has(const String& name) const {
     return handler_.has(name);
   }
 
@@ -82,14 +85,14 @@ struct References {
    * \warning not thread safe
    * @param[in] name sequence name
    */
-  void erase(const String_& name) {
+  void erase(const String& name) {
     auto itr = map_.find(name);
     if (itr != map_.end()) map_.erase(itr);
   }
 
 private:
   const Fai handler_;
-  mutable std::map<String_, SeqPtr> map_;
+  mutable std::map<String, SeqPtr> map_;
 };
 
 }

@@ -17,11 +17,11 @@ include(modules/modules.cmake)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} boost_program_options boost_log )
 
-add_executable(bare bare.cpp)
-add_dependencies(bare buildinfo)
+add_executable(ccbb ccbb.cpp)
+add_dependencies(ccbb buildinfo)
 if(TARGET boost)
-  add_dependencies(bare boost)
+  add_dependencies(ccbb boost)
 endif(TARGET boost)
-target_link_libraries(bare ${EXTRA_LIBS})
+target_link_libraries(ccbb ${EXTRA_LIBS})
 
-install (TARGETS bare DESTINATION bin)
+install (TARGETS ccbb DESTINATION bin)
