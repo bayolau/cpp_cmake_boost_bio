@@ -39,7 +39,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <seqan/bam_io.h>
 #include "bio/seq/SeqBase.h"
 #include "bio/References.h"
-#include "bio/Locus.h"
 
 namespace bayolau {
 namespace bio {
@@ -52,7 +51,8 @@ struct Trait<SeqanBamRecord<Seq_> > {
   using Seq = Seq_;
   using Impl = seqan::BamAlignmentRecord;
   using String = decltype(Impl::qName);
-  using Locus = Locus<decltype(Impl::rID), decltype(Impl::beginPos)>;
+  using Pos = decltype(Impl::beginPos);
+  using RefId = decltype(Impl::rID);
   using Refs = typename bio::References<String, Seq_>;
   using RefPtr = typename bio::References<String, Seq_>::SeqPtr;
 };
@@ -62,7 +62,6 @@ struct SeqanBamRecord : public SeqBase<SeqanBamRecord<Seq_> > {
   using Seq = typename Trait<SeqanBamRecord>::Seq;
   using Impl = typename Trait<SeqanBamRecord>::Impl;
   using String = typename Trait<SeqanBamRecord>::String;
-  using Locus = typename Trait<SeqanBamRecord>::Locus;
   using Refs = typename Trait<SeqanBamRecord>::Refs;
   using RefPtr = typename Trait<SeqanBamRecord>::RefPtr;
 
@@ -105,8 +104,6 @@ private:
   };
 
   String const& _qname() const { return record_.qName; }
-
-  Locus _locus() const { return Locus(_ref_id(), _ref_begin0(), _ref_end0()); } //rvo
 
   bool _isMapped() const { return !hasFlagUnmapped(record_); }
 

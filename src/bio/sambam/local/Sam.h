@@ -35,7 +35,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <utility>
 
 #include "bio/Forward.h"
-#include "bio/Locus.h"
 #include "bio/References.h"
 #include "bio/seq/SeqBase.h"
 #include "util/StdinByLine.h"
@@ -53,9 +52,20 @@ struct Trait<RawSAMRecord<Seq_>> {
   using Seq = Seq_;
   using Impl = std::vector<char>;
   using String = char const*;
-  using Locus = Locus<String, uint32_t>;
+  using Pos = uint32_t;
+  using RefId = String;
   using Refs = typename bio::References<String, Seq>;
   using RefPtr = typename bio::References<String, Seq>::SeqPtr;
+};
+
+struct RawSAMHeader {
+  using Line = std::vector<char>;
+
+  template<class T>
+  void push_back(T&& line) { lines_.push_back(std::forward<T>(line)); }
+
+private:
+  std::list<Line> lines_;
 };
 
 template<class Seq_>
@@ -63,7 +73,7 @@ struct RawSAMRecord : SeqBase<RawSAMRecord<Seq_> > {
   using Line = std::vector<char>;
   using String = typename Trait<RawSAMRecord>::String;
 
-  RawSAMRecord(Line&& line) : line_(std::forward<Line>(line)) { init(); }
+  RawSAMRecord(Line&& line) : line_(std::move(line)) { init(); }
 
   Line& line() { return line_; }
 
@@ -145,15 +155,6 @@ private:
   unsigned char mapq_;
 };
 
-struct RawSAMHeader {
-  using Line = std::vector<char>;
-
-  template<class T>
-  void push_back(T&& line) { lines_.push_back(std::forward<T>(line)); }
-
-private:
-  std::list<Line> lines_;
-};
 
 template<class Seq_>
 struct StdinSAMReader {

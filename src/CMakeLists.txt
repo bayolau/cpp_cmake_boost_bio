@@ -15,7 +15,7 @@ ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
 #automatically discover modules/<name> and compile modules/<name>/main.cpp into a library named <name>
 include(modules/modules.cmake)
 
-set (EXTRA_LIBS ${EXTRA_LIBS} libboost_program_options.a libboost_log.a )
+set (EXTRA_LIBS ${EXTRA_LIBS} boost_program_options boost_log )
 
 add_executable(bare bare.cpp)
 add_dependencies(bare buildinfo)

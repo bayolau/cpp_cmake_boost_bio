@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef BIO_LOCUS_H
 #define BIO_LOCUS_H
 namespace bayolau {
-namespace bio { }
+namespace bio {
 template<typename R_, typename P_>
 struct Locus {
   using Ref = R_;
@@ -52,5 +52,6 @@ struct Locus {
 private:
   const std::tuple<Ref, Pos, Pos> data_;
 };
+}
 }
 #endif //BIO_LOCUS_H

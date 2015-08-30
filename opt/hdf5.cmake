@@ -6,7 +6,7 @@ if (BUILD_HDF5 AND NOT EXISTS ${OPT_DIR}/include/H5Cpp.h )
   ExternalProject_Add( hdf5
                        PREFIX ${OPT_DIR}/hdf5_cmake_prefix
                        URL https://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.9/src/hdf5-1.8.9.tar.gz
-                       CONFIGURE_COMMAND ./configure --prefix ${OPT_DIR} --enable-cxx
+                       CONFIGURE_COMMAND ./configure --prefix ${OPT_DIR} --enable-cxx CFLAGS=-std=c99 CXXFLAGS=-std=c++11
                        BUILD_IN_SOURCE 1
                        BUILD_COMMAND make
                        INSTALL_COMMAND make install

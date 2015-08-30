@@ -44,9 +44,8 @@ template<class Derived_>
 struct SeqBase {
   using Derived = Derived_;
   using String = typename Trait<Derived>::String;
-  using Locus = typename Trait<Derived>::Locus;
-  using Pos = typename Locus::Pos;
-  using RefId = typename Locus::Ref;
+  using Pos = typename Trait<Derived>::Pos;
+  using RefId = typename Trait<Derived>::RefId;
   using RefPtr = typename Trait<Derived>::RefPtr;
 
   template<class Generator>
@@ -57,8 +56,6 @@ struct SeqBase {
   bool isMapped() const { return derived()._isMapped(); }
 
   Pos size() const { return derived()._size(); }
-
-  Locus locus() const { return derived()._locus(); }
 
   RefId ref_id() const { return derived()._ref_id(); }
 
