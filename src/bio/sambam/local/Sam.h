@@ -34,6 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <utility>
 
+#include "util/Range.h"
+
 #include "bio/Forward.h"
 #include "bio/References.h"
 #include "bio/seq/SeqBase.h"
@@ -43,6 +45,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace bayolau {
 namespace bio {
 
+template<class Itr>
+void ProcessCigar(Itr const begin, const Itr end) {
+  char* itr = const_cast<char*>(begin);
+  if (itr == end or *itr == '#') {
+    std::cout << "empty CIGAR" << std::endl;
+    return;
+  }
+  int64_t len = 0;
+  do {
+    const auto nbp = strtoul(itr, &itr, 10);
+    const char op = *itr++;
+
+    if(op == 'I' || op == 'M' || op == 'S' || op == '=' || op =='X') {
+      len += nbp;
+    }
+  } while(itr != end);
+  std::cout << "seq length " << len << std::endl;
+}
+
+
 template<class Seq_>
 struct RawSAMRecord;
 
@@ -50,6 +72,7 @@ template<class Seq_>
 struct Trait<RawSAMRecord<Seq_> > {
   using Impl = std::vector<char>;
   using String = char const*;
+  using SeqView = Range<String>;
   using Pos = uint32_t;
   using RefId = String;
   using Refs = typename bio::References<std::string, Seq_>;
@@ -60,6 +83,7 @@ template<class Seq_>
 struct RawSAMRecord : SeqBase<RawSAMRecord<Seq_> > {
   using Buffer = std::vector<char>;
   using String = typename Trait<RawSAMRecord>::String;
+  using SeqView = typename Trait<RawSAMRecord>::SeqView;
 
   explicit RawSAMRecord(Buffer&& line) : line_(std::move(line)) { init(); }
 
@@ -74,6 +98,12 @@ struct RawSAMRecord : SeqBase<RawSAMRecord<Seq_> > {
   Buffer& line() { return line_; }
 
   Buffer const& line() const { return line_; }
+
+  SeqView seq() const { return SeqView(seq_, qual_ - 1); }
+
+  SeqView qual() const { return SeqView(qual_, optional_ - 1); }
+
+  SeqView cigar() const { return SeqView(cigar_, rnext_ - 1); }
 
 private:
   friend struct SeqBase<RawSAMRecord>;
@@ -168,7 +198,22 @@ void Print(std::ostream& os, RawSAMRecord<Seq_> const& record, bool print_alignm
        */
             ;
   }
+  const auto& seq = record.seq();
+  os << " " << seq.size()
+  << " " << record.qual().size();
   os << "\n";
+  bool valid = true;
+  for (auto itr = seq.begin(); itr != seq.end(); ++itr) {
+    if (*itr != 'A' and *itr != 'C' and *itr != 'G' and *itr != 'T') {
+      os << "WARNING: at " << std::distance(seq.begin(), itr) << " " << *itr << std::endl;
+      valid = false;
+      break;
+    }
+  }
+  if (valid) {
+    os << "valid" << std::endl;
+  }
+  ProcessCigar(record.cigar().begin(), record.cigar().end());
   if (print_alignment and record.isMapped()) {
     /*
       seqan::Align<Seq_> align;
