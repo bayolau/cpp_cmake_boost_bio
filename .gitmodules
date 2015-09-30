@@ -5,3 +5,9 @@
 	path = opt/seqan
 	url = https://github.com/bayolau/seqan.git
 	branch = bayolau
+[submodule "opt/allpathslg"]
+	path = opt/allpathslg
+	url = https://github.com/bayolau/allpathslg.git
+[submodule "opt/discovar"]
+	path = opt/discovar
+	url = https://github.com/bayolau/discovar.git

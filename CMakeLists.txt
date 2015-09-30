@@ -13,12 +13,14 @@ option (BUILD_BOOST "build boost into opt" ON)
 
 # language settings
 set (CMAKE_CXX_STANDARD 11)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -fopenmp")
 set (CMAKE_C_STANDARD 99)
 
 # set up opt structure
 set (OPT_DIR ${PROJECT_SOURCE_DIR}/opt)
 set (OPT_INCLUDE ${OPT_DIR}/include)
+# allpaths lg's header are badly organized
+set (OPT_INCLUDE ${OPT_INCLUDE} ${OPT_DIR}/allpathslg/src)
 set (OPT_LIB ${OPT_DIR}/lib)
 include_directories(${OPT_INCLUDE})
 link_directories(${OPT_LIB})

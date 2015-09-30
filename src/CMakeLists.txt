@@ -17,6 +17,46 @@ include(modules/modules.cmake)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} boost_program_options boost_log )
 
+add_library( allpathslg
+    ${OPT_DIR}/allpathslg/src/TokenizeString.cc
+    ${OPT_DIR}/allpathslg/src/feudal/Mempool.cc
+    ${OPT_DIR}/allpathslg/src/feudal/Generic.cc
+    ${OPT_DIR}/allpathslg/src/feudal/Oob.cc
+    ${OPT_DIR}/allpathslg/src/feudal/CharString.cc
+    ${OPT_DIR}/allpathslg/src/feudal/BinaryStream.cc
+    ${OPT_DIR}/allpathslg/src/system/file/Directory.cc
+    ${OPT_DIR}/allpathslg/src/system/file/FileReader.cc
+    ${OPT_DIR}/allpathslg/src/system/file/SymLink.cc
+    ${OPT_DIR}/allpathslg/src/system/file/File.cc
+    ${OPT_DIR}/allpathslg/src/system/file/FileWriter.cc
+    ${OPT_DIR}/allpathslg/src/system/file/TempFile.cc
+    ${OPT_DIR}/allpathslg/src/system/AllOfOutput.cc
+    ${OPT_DIR}/allpathslg/src/system/HostName.cc
+    ${OPT_DIR}/allpathslg/src/system/ParallelSortTest.cc
+    ${OPT_DIR}/allpathslg/src/system/System.cc
+    ${OPT_DIR}/allpathslg/src/system/UseGDB.cc
+    ${OPT_DIR}/allpathslg/src/system/Assert.cc
+    ${OPT_DIR}/allpathslg/src/system/HTMLUtils.cc
+    ${OPT_DIR}/allpathslg/src/system/ParsedArgs.cc
+    ${OPT_DIR}/allpathslg/src/system/Utils.cc
+    ${OPT_DIR}/allpathslg/src/system/Crash.cc
+    ${OPT_DIR}/allpathslg/src/system/MemTracker.cc
+    ${OPT_DIR}/allpathslg/src/system/ProcBuf.cc
+    ${OPT_DIR}/allpathslg/src/system/WorklistMP.cc
+    ${OPT_DIR}/allpathslg/src/system/ErrNo.cc
+    ${OPT_DIR}/allpathslg/src/system/MiscUtil.cc
+    ${OPT_DIR}/allpathslg/src/system/RunTime.cc
+    ${OPT_DIR}/allpathslg/src/system/TraceVal.cc
+    ${OPT_DIR}/allpathslg/src/system/WorklistUtils.cc
+    ${OPT_DIR}/allpathslg/src/system/Exit.cc
+    ${OPT_DIR}/allpathslg/src/system/Parallel.cc
+    ${OPT_DIR}/allpathslg/src/system/SysConf.cc
+    ${OPT_DIR}/allpathslg/src/system/Types.cc
+    ${OPT_DIR}/allpathslg/src/system/Thread.cc
+    ${OPT_DIR}/allpathslg/src/system/ThreadsafeIO.cc
+    )
+set (EXTRA_LIBS ${EXTRA_LIBS} allpathslg)
+
 add_executable(ccbb ccbb.cpp)
 add_dependencies(ccbb buildinfo)
 if(TARGET boost)
