@@ -13,7 +13,7 @@ Tested for:
 
 ```CMake >= 3.2.2``` (```<= 2.8.9``` is known to fail)
 
-```Apple LLVM version 6.1.0 (clang-602.0.53) (based on LLVM 3.6.0svn)```
+~~```Apple LLVM version 6.1.0 (clang-602.0.53) (based on LLVM 3.6.0svn)```~~ due to current ALLPATHS-LG
 
 ```gcc >= 5.10``` (```<= 4.8.2``` has known bugs / missing c++11 features)
 
