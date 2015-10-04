@@ -17,6 +17,10 @@ include(modules/modules.cmake)
 
 set (EXTRA_LIBS ${EXTRA_LIBS} boost_program_options boost_log )
 
+if (EXISTS ${SRC_DIR}/modules/extra.cmake)
+  include(${SRC_DIR}/modules/extra.cmake)
+endif (EXISTS ${SRC_DIR}/modules/extra.cmake)
+
 add_library( allpathslg
     ${OPT_DIR}/allpathslg/src/CompressedSequence.cc
     ${OPT_DIR}/allpathslg/src/TokenizeString.cc
@@ -81,6 +85,7 @@ add_library( allpathslg
     ${OPT_DIR}/allpathslg/src/system/ThreadsafeIO.cc
     )
 set (EXTRA_LIBS ${EXTRA_LIBS} allpathslg)
+
 
 add_executable(ccbb ccbb.cpp)
 add_dependencies(ccbb buildinfo)
