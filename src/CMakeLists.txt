@@ -20,19 +20,35 @@ set (EXTRA_LIBS ${EXTRA_LIBS} boost_program_options boost_log )
 add_library( allpathslg
     ${OPT_DIR}/allpathslg/src/CompressedSequence.cc
     ${OPT_DIR}/allpathslg/src/TokenizeString.cc
+    ${OPT_DIR}/allpathslg/src/Equiv.cc
+    ${OPT_DIR}/allpathslg/src/FastIfstream.cc
     ${OPT_DIR}/allpathslg/src/FastaConverter.cc
     ${OPT_DIR}/allpathslg/src/FastaFileset.cc
     ${OPT_DIR}/allpathslg/src/FastaFilestream.cc
     ${OPT_DIR}/allpathslg/src/FastaFilestreamPreview.cc
     ${OPT_DIR}/allpathslg/src/FastaVerifier.cc
     ${OPT_DIR}/allpathslg/src/FastaNameParser.cc
+    ${OPT_DIR}/allpathslg/src/Fastavector.cc
+    ${OPT_DIR}/allpathslg/src/PackAlign.cc
+    ${OPT_DIR}/allpathslg/src/PrintAlignment.cc
+    ${OPT_DIR}/allpathslg/src/Vec.cc
     ${OPT_DIR}/allpathslg/src/dna/Bases.cc
+    ${OPT_DIR}/allpathslg/src/feudal/BaseVec.cc
+    ${OPT_DIR}/allpathslg/src/feudal/FeudalFileReader.cc
+    ${OPT_DIR}/allpathslg/src/feudal/FeudalFileWriter.cc
+    ${OPT_DIR}/allpathslg/src/feudal/FeudalControlBlock.cc
     ${OPT_DIR}/allpathslg/src/feudal/Mempool.cc
     ${OPT_DIR}/allpathslg/src/feudal/Generic.cc
+    ${OPT_DIR}/allpathslg/src/feudal/BitVec.cc
     ${OPT_DIR}/allpathslg/src/feudal/Oob.cc
     ${OPT_DIR}/allpathslg/src/feudal/CharString.cc
     ${OPT_DIR}/allpathslg/src/feudal/BinaryStream.cc
+    ${OPT_DIR}/allpathslg/src/graph/Digraph.cc
+    ${OPT_DIR}/allpathslg/src/math/Matrix.cc
+    ${OPT_DIR}/allpathslg/src/math/Permutation.cc
     ${OPT_DIR}/allpathslg/src/random/RNGen.cc
+    ${OPT_DIR}/allpathslg/src/pairwise_aligners/SmithWatFree.cc
+    ${OPT_DIR}/allpathslg/src/pairwise_aligners/SmithWatBandedA.cc
     ${OPT_DIR}/allpathslg/src/system/file/Directory.cc
     ${OPT_DIR}/allpathslg/src/system/file/FileReader.cc
     ${OPT_DIR}/allpathslg/src/system/file/SymLink.cc
