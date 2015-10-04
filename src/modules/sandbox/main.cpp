@@ -25,8 +25,6 @@
 #include "util/ProgramOptions.h"
 #include "main.h"
 
-#include "Basevector.h"
-
 namespace {
 struct BareOptions : public bayolau::ProgramOptions {
   BareOptions(const bayolau::CommandLine& cl) {
@@ -67,21 +65,7 @@ int main(const bayolau::CommandLine& cl) {
   std::for_each(numbers.cbegin(), numbers.cend(), std::cout << (boost::lambda::_1 * 3) << " ");
   std::cout << std::endl;
 
-  BaseVecVec reads;
-
   return 0;
 }
 }
 }
-
-#include "feudal/OuterVec.h"
-template class OuterVec<BaseVec>;
-#include "feudal/FieldVec.h"
-#include "feudal/FieldVecDefs.h"
-template class FieldVec<2, MempoolAllocator<unsigned char> >;
-#include "feudal/SmallVec.h"
-#include "feudal/SmallVecDefs.h"
-template class SmallVec<char, MempoolAllocator<char> >;
-#include "feudal/FeudalString.h"
-#include "feudal/FeudalStringDefs.h"
-template class FeudalString<char, std::char_traits<char> >;

@@ -2,8 +2,8 @@
 // Created by Bayo Lau on 8/12/15.
 //
 
-#ifndef MODULES_BAMTEST_OPTIONS_H
-#define MODULES_BAMTEST_OPTIONS_H
+#ifndef MODULES_FAITEST_OPTIONS_H
+#define MODULES_FAITEST_OPTIONS_H
 
 namespace bayolau {
 namespace faitest {
@@ -27,4 +27,4 @@ private:
 }
 }
 
-#endif //MODULES_BAMTEST_OPTIONS_H
+#endif //MODULES_FAITEST_OPTIONS_H
