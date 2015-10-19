@@ -6,5 +6,5 @@
 int main(int argc, const char* const argv[]) {
   std::cout << "build version " << bayolau::BuildInfo::version() << std::endl;
   std::cout << "git status " << bayolau::BuildInfo::git_status() << std::endl;
-  bayolau::modules::Dispatch(argc, argv);
+  return bayolau::modules::Dispatch(argc, argv);
 }
