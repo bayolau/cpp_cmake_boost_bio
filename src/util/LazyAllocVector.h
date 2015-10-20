@@ -48,13 +48,21 @@ struct LazyAllocVector {
   size_t size() const { return size_; }
 
   reference operator[](size_t ii) { return container_[ii]; };
+
   const_reference operator[](size_t ii) const { return container_[ii]; };
 
-  void clear() { size_ = 0;}
+  void clear() { size_ = 0; }
 
-  void push_back(value_type && other) {
-    if(size_ < container_.size() ) {
-      swap(container_[size_++] , other);
+  void resize(size_t new_size) {
+    if (new_size > container_.size()) {
+      container_.resize(new_size);
+    }
+    size_ = new_size;
+  }
+
+  void push_back(value_type&& other) {
+    if (size_ < container_.size()) {
+      swap(container_[size_++], other);
     }
     else {
       container_.push_back(std::forward<value_type>(other));
