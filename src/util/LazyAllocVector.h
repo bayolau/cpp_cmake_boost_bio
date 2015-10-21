@@ -44,6 +44,8 @@ struct LazyAllocVector {
   using reference = value_type&;
   using const_reference = value_type const&;
   using Container = std::vector<value_type>;
+  using const_iterator = typename Container::const_iterator;
+  using iterator = typename Container::iterator;
 
   size_t size() const { return size_; }
 
@@ -65,9 +67,27 @@ struct LazyAllocVector {
       swap(container_[size_++], other);
     }
     else {
-      container_.push_back(std::forward<value_type>(other));
+      container_.push_back(other);
       size_ = container_.size();
     }
+  }
+
+  void push_back(const value_type& other) {
+    if (size_ < container_.size()) {
+      container_[size_++] = other;
+    }
+    else {
+      container_.push_back(other);
+      size_ = container_.size();
+    }
+  }
+
+  const_iterator begin() const {
+    return container_.begin();
+  }
+
+  const_iterator end() const {
+    return this->begin() + size_;
   }
 
 private:
