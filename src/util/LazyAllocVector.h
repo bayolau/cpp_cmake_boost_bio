@@ -82,6 +82,17 @@ struct LazyAllocVector {
     }
   }
 
+  template<class... Args>
+  void emplace_back(Args&& ... args) {
+    if (size_ < container_.size()) {
+      container_[size_++] = value_type(std::forward<Args>(args)...);
+    }
+    else {
+      container_.emplace_back(std::forward<Args>(args)...);
+      size_ = container_.size();
+    }
+  }
+
   const_iterator begin() const {
     return container_.begin();
   }
