@@ -34,6 +34,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef BASE_H
 #define BASE_H
+
+#include <array>
+
 namespace bayolau {
 
 struct Base {
@@ -46,21 +49,35 @@ struct Base {
     return instance().to_val_[other];
   }
 
+  static char to_char(char other) {
+    return instance().to_char_[other];
+  }
+
   static Base const& instance() {
     static Base instance;
     return instance;
   }
 
+  enum BP_CODE {
+    BP_A = 0,
+    BP_C = 1,
+    BP_G = 2,
+    BP_T = 3,
+    BP_GAP = 4
+  };
+
 private:
   std::array<char, 256> rc_mapper_;
+  std::array<char, 256> to_char_;
   std::array<unsigned char, 256> to_val_;
 
   Base() {
     rc_mapper_.fill(' ');
-    rc_mapper_[0] = 3;
-    rc_mapper_[1] = 2;
-    rc_mapper_[2] = 1;
-    rc_mapper_[3] = 0;
+    rc_mapper_[BP_A] = BP_T;
+    rc_mapper_[BP_C] = BP_G;
+    rc_mapper_[BP_G] = BP_C;
+    rc_mapper_[BP_T] = BP_A;
+    rc_mapper_[BP_GAP] = BP_GAP;
 
     rc_mapper_['A'] = 'T';
     rc_mapper_['a'] = 'T';
@@ -73,26 +90,55 @@ private:
 
     rc_mapper_['T'] = 'A';
     rc_mapper_['t'] = 'A';
+    rc_mapper_[' '] = ' ';
 
     to_val_.fill(255); // crash delibrately
     //preserve values
-    to_val_[0] = 0;
-    to_val_[1] = 1;
-    to_val_[2] = 2;
-    to_val_[3] = 3;
+    to_val_[BP_A] = BP_A;
+    to_val_[BP_C] = BP_C;
+    to_val_[BP_G] = BP_G;
+    to_val_[BP_T] = BP_T;
+    to_val_[BP_GAP] = BP_GAP;
 
     //ascii
-    to_val_['A'] = 0;
-    to_val_['a'] = 0;
+    to_val_['A'] = BP_A;
+    to_val_['a'] = BP_A;
 
-    to_val_['C'] = 1;
-    to_val_['c'] = 1;
+    to_val_['C'] = BP_C;
+    to_val_['c'] = BP_C;
 
-    to_val_['G'] = 2;
-    to_val_['g'] = 2;
+    to_val_['G'] = BP_G;
+    to_val_['g'] = BP_G;
 
-    to_val_['T'] = 3;
-    to_val_['t'] = 3;
+    to_val_['T'] = BP_T;
+    to_val_['t'] = BP_T;
+
+    // space
+    to_val_[' '] = BP_GAP;
+
+
+    to_char_.fill('?'); // crash delibrately
+    //preserve values
+    to_char_[BP_A] = 'A';
+    to_char_[BP_C] = 'C';
+    to_char_[BP_G] = 'G';
+    to_char_[BP_T] = 'T';
+    to_char_[BP_GAP] = ' ';
+
+    to_char_['A'] = 'A';
+    to_char_['a'] = 'A';
+
+    to_char_['C'] = 'C';
+    to_char_['c'] = 'C';
+
+    to_char_['G'] = 'G';
+    to_char_['g'] = 'G';
+
+    to_char_['T'] = 'T';
+    to_char_['t'] = 'T';
+
+    // space
+    to_char_[' '] = ' ';
   }
 };
 

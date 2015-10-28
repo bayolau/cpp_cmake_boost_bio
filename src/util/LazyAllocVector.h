@@ -101,6 +101,10 @@ struct LazyAllocVector {
     return this->begin() + size_;
   }
 
+  const_reference back() const {
+    return container_.back();
+  }
+
 private:
   Container container_;
   size_t size_;

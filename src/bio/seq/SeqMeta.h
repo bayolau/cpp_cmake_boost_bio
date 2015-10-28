@@ -36,6 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define BIO_SEQ_BASEQUAL_H
 
 #include <vector>
+#include <iostream>
 #include "bio/Base.h"
 
 namespace bayolau {
@@ -47,6 +48,10 @@ struct Meta {
 
   Meta(M m) : meta_(m) { }
 
+  const M meta() const {
+    return meta_;
+  }
+
 private:
   M meta_;
 };
@@ -54,27 +59,38 @@ private:
 // empty baseclass optimization
 template<>
 struct Meta<void> {
+  static const char meta() {
+    return 0;
+  }
 };
 
 template<class B, class M>
 struct BaseMeta : Meta<M> {
-  BaseMeta() = default;
+  BaseMeta() : Meta<M>(), base_(Base::BP_GAP) { }
+
+  BaseMeta(B b) : Meta<M>(), base_(Base::to_val(b)) { }
 
   template<class MM = M>
-  BaseMeta(B b, typename std::enable_if<is_void<MM>::value, M>::type* dummy = nullptr) : base_(Base::to_val(b)) { }
+  BaseMeta(B b, MM m, typename std::enable_if<!is_void<MM>::value, M>::type* dummy = nullptr) : Meta<M>(m), base_(
+          Base::to_val(b)) { }
 
-  template<class MM = M>
-  BaseMeta(B b, MM m, typename std::enable_if<!is_void<MM>::value, M>::type* dummy = nullptr) : Meta<M>(m), base_(Base::to_val(b)) { }
-
-  void rc() {
+  void complement() {
     base_ = Base::complement(base_);
   }
 
   operator B() const { return base_; }
 
+  const B base() const { return base_; }
+
 private:
   B base_;
 };
+
+template<class B, class M>
+std::ostream& operator<<(std::ostream& os, BaseMeta<B, M> const& other) {
+  os << Base::to_char(other.base());
+  return os;
+}
 
 static_assert(sizeof(BaseMeta<char, void>) == 1, "empty base class optimization is required. Don't mess with my code.");
 static_assert(sizeof(BaseMeta<char, char>) == 2, "byte pack required. Don't mess with my code.");
@@ -88,7 +104,7 @@ struct SeqMeta {
 
   SeqMeta() = default;
 
-  SeqMeta(typename Container::const_iterator i, typename Container::const_iterator e) : data_(i,e) { }
+  SeqMeta(typename Container::const_iterator i, typename Container::const_iterator e) : data_(i, e) { }
 
   template<class ItrS, class ItrM = void*, class MM = M>
   SeqMeta(ItrS s_itr, ItrS s_end, ItrM m_itr = nullptr, ItrM m_end = nullptr,
@@ -130,12 +146,12 @@ struct SeqMeta {
   void rc() {
     auto front = data_.begin(), back = data_.end() - 1;
     for (; std::distance(front, back) > 0; ++front, --back) {
-      front->rc();
-      back->rc();
+      front->complement();
+      back->complement();
       swap(*front, *back);
     }
-    if(front == back) {
-      front->rc();
+    if (front == back) {
+      front->complement();
     }
   }
 
@@ -145,6 +161,14 @@ struct SeqMeta {
 
   typename Container::const_iterator end() const {
     return data_.end();
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, SeqMeta const& other) {
+    for (auto const& entry: other.data_) {
+      os << Base::to_char(entry);
+    }
+    os << " " << other.data_.size() << "\n";
+    return os;
   }
 
 private:
