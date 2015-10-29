@@ -179,6 +179,11 @@ struct SeqMeta {
     data_.push_back(bm);
   }
 
+  template<class... Args>
+  void emplace_back(Args&& ... args) {
+    data_.emplace_back(std::forward<Args>(args)...);
+  }
+
 private:
   Container data_;
 };
@@ -193,6 +198,31 @@ template<class B, class M>
 inline void reverseComplement(SeqMeta<B, M>& entry) {
   entry.rc();
 }
+
+template<class B, class M>
+void PrintFastq(ostream& os, SeqMeta<B, M> const& seq, std::string const& id, char shift = 33) {
+  os << "@" << id << "\n";
+  for (auto const& entry: seq) {
+    os << bayolau::Base::to_char(entry);
+  }
+  os << "\n+\n";
+  const auto upper = std::numeric_limits<char>::max() - shift;
+  for (auto const& entry: seq) {
+    os << char(entry.meta() > upper ? std::numeric_limits<char>::max() : entry.meta() + shift);
+  }
+  os << '\n';
+}
+
+template<class B, class M>
+void PrintFasta(ostream& os, SeqMeta<B, M> const& seq, std::string const& id, size_t width = 80) {
+  os << ">" << id;
+  for (size_t count = 0; count < seq.size(); ++count) {
+    if (count % width == 0) os << "\n";
+    os << bayolau::Base::to_char(seq[count]);
+  }
+  os << "\n";
+}
+
 
 }
 }
