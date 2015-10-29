@@ -167,8 +167,16 @@ struct SeqMeta {
     for (auto const& entry: other.data_) {
       os << Base::to_char(entry);
     }
-    os << " " << other.data_.size() << "\n";
+    os << "\n";
     return os;
+  }
+
+  void reserve(size_t size) {
+    data_.reserve(size);
+  }
+
+  void push_back(BaseMeta<B, M> const& bm) {
+    data_.push_back(bm);
   }
 
 private:
