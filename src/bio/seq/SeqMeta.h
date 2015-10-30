@@ -48,7 +48,11 @@ struct Meta {
 
   Meta(M m) : meta_(m) { }
 
-  const M meta() const {
+  M& meta() {
+    return meta_;
+  }
+
+  M const& meta() const {
     return meta_;
   }
 
