@@ -210,9 +210,10 @@ void PrintFastq(ostream& os, SeqMeta<B, M> const& seq, std::string const& id, ch
     os << bayolau::Base::to_char(entry);
   }
   os << "\n+\n";
-  const auto upper = std::numeric_limits<char>::max() - shift;
+  const char upper = 93; // this is fastq maximum
+  const char maximum = 93 + shift;
   for (auto const& entry: seq) {
-    os << char(entry.meta() > upper ? std::numeric_limits<char>::max() : entry.meta() + shift);
+    os << char(entry.meta() > upper ? maximum : entry.meta() + shift);
   }
   os << '\n';
 }
