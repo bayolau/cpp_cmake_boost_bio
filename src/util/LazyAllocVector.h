@@ -102,7 +102,7 @@ struct LazyAllocVector {
   }
 
   const_reference back() const {
-    return container_.back();
+    return container_[size_-1];
   }
 
 private:

@@ -111,11 +111,14 @@ private:
 
 template<class Matrix>
 std::pair<size_t, size_t> TraceFront(size_t row, size_t col, Matrix const& matrix) {
+  std::pair<size_t, size_t> ret(row, col);
   while (row >= 1 and col >= 1) {
     switch (matrix(row, col).dir()) {
       case Matrix::value_type::Org:
-        return std::make_pair(row, col);
+        return ret;
       case Matrix::value_type::Diag:
+        ret.first = row;
+        ret.second = col;
         --row;
         --col;
         break;
@@ -127,7 +130,7 @@ std::pair<size_t, size_t> TraceFront(size_t row, size_t col, Matrix const& matri
         break;
     }
   }
-  return std::make_pair(row, col);
+  return ret;
 }
 
 template<class RT_, class CT_>
