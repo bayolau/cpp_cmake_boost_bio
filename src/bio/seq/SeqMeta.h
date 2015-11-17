@@ -63,7 +63,7 @@ private:
 // empty baseclass optimization
 template<>
 struct Meta<void> {
-  static const char meta() {
+  static char meta() {
     return 0;
   }
 };
@@ -157,6 +157,12 @@ struct SeqMeta {
     if (front == back) {
       front->complement();
     }
+  }
+
+  void trim(size_t b, size_t e) {
+    const size_t n = e - b;
+    if( b > 0 ) { std::move(data_.begin() + b, data_.begin() + e, data_.begin()); }
+    data_.resize(n);
   }
 
   typename Container::const_iterator begin() const {
