@@ -43,9 +43,6 @@ namespace bayolau {
 namespace bio {
 namespace alignment {
 
-inline size_t length(basevector const& in) {
-  return in.size();
-}
 inline size_t length(std::string const& in) {
   return in.size();
 }
