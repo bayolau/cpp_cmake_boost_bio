@@ -188,6 +188,14 @@ public:
   // these are to fool code written for allpaths
   Alignment const& bases() const { return *this; }
 
+  size_t edit_distance() const { // quick and dirty hack, need to properly use matrix transversal
+    size_t ret = 0;
+    for (const auto& entry: c_) {
+      ret += static_cast<size_t>(Base::to_char(entry.first) != Base::to_char(entry.second));
+    }
+    return ret;
+  }
+
 private:
   Container c_;
 };
