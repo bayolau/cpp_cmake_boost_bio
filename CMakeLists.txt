@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 3.2.0)
 
-set(CMAKE_BUILD_TYPE Release)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif(NOT CMAKE_BUILD_TYPE)
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 project (Bare)
 set (VERSION_MAJOR 1)
