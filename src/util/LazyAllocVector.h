@@ -96,8 +96,14 @@ struct LazyAllocVector {
   const_iterator begin() const {
     return container_.begin();
   }
+  iterator begin() {
+    return container_.begin();
+  }
 
   const_iterator end() const {
+    return this->begin() + size_;
+  }
+  iterator end() {
     return this->begin() + size_;
   }
 
@@ -107,6 +113,16 @@ struct LazyAllocVector {
 
   reference back() {
     return container_[size_-1];
+  }
+
+  template<class Itr>
+  void append(Itr b, Itr e) {
+    while( b != e && size_ < container_.size() ) {
+      swap(container_[size_++], *b);
+    }
+    if(b != e) {
+      container_.insert(container_.end(), b, e);
+    }
   }
 
 private:
