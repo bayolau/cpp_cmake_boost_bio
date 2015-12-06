@@ -27,6 +27,9 @@
 #OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 add_library(modules ${CMAKE_CURRENT_LIST_DIR}/dispatch.cpp)
+if(TARGET boost)
+  add_dependencies(modules boost)
+endif(TARGET boost)
 set (EXTRA_LIBS ${EXTRA_LIBS} modules)
 
 include(${SRC_DIR}/cmake/sub_dir_list.cmake)
