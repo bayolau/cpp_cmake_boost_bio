@@ -196,6 +196,39 @@ public:
     return ret;
   }
 
+  std::string cigar(std::vector<char> const& lookup) const { // quick and dirty, return the cigar of RT aligned to CT, with lookup
+    std::cout << *this << std::endl;
+    std::string ret;
+    ret.reserve(c_.size());
+    enum {INS = 0, DEL, MIS, MAT, UNDEFINED};
+    int state = UNDEFINED;
+    int length = 0;
+    for(auto const& entry: c_) {
+      int new_state = UNDEFINED;
+      if ( entry.gap_a() ) { new_state = DEL; }
+      else if ( entry.gap_b() ) { new_state = INS; }
+      else if (entry.base_a() == entry.base_b()) { new_state = MAT; }
+      else { new_state = MIS; }
+      if (new_state == state) {
+        ++length;
+      }
+      else {
+        if (state != UNDEFINED) {
+          ret+=std::to_string(length);
+          ret+=lookup[state];
+        }
+        state = new_state;
+        length = 1;
+      }
+    }
+    if (state != UNDEFINED) {
+      ret+=std::to_string(length);
+      ret+=lookup[state];
+    }
+    std::cout << ret << std::endl;
+    return ret;
+  }
+
 private:
   Container c_;
 };
