@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "dispatch.h"
 #include "util/ProgramOptions.h"
+#include "util/Logging.h"
 #include "modules/modules.h"
 
 namespace bayolau {
@@ -62,7 +63,7 @@ private:
 
 int Dispatch(int argc, const char* const argv[]) {
   CommandLine cl(argc, argv);
-  std::cout << cl << std::endl;
+  LOG(info) << cl;
   ModuleOptions mo(cl);
 
   std::ostream& os = mo.help() ? std::cout : std::cerr;
