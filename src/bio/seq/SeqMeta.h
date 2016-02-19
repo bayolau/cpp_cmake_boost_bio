@@ -107,6 +107,10 @@ struct SeqMeta {
   using Container = std::vector<BaseMeta<B, M>>;
 
   SeqMeta() = default;
+  SeqMeta(SeqMeta const&) = default;
+  SeqMeta(SeqMeta&&) = default;
+  SeqMeta& operator=(SeqMeta const&) = default;
+  SeqMeta& operator=(SeqMeta&&) = default;
 
   SeqMeta(typename Container::const_iterator i, typename Container::const_iterator e) : data_(i, e) { }
 

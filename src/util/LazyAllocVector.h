@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <vector>
+#include <utility>
 
 template<class T>
 struct LazyAllocVector {
@@ -64,7 +65,7 @@ struct LazyAllocVector {
 
   void push_back(value_type&& other) {
     if (size_ < container_.size()) {
-      swap(container_[size_++], other);
+      std::swap(container_[size_++], other);
     }
     else {
       container_.push_back(other);
