@@ -116,6 +116,10 @@ struct LazyAllocVector {
     return container_[size_-1];
   }
 
+  void reserve(size_t size) {
+    container_.reserve(size);
+  }
+
   template<class Itr>
   void append(Itr b, Itr e) {
     while( b != e && size_ < container_.size() ) {
