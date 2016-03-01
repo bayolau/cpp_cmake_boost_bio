@@ -61,12 +61,16 @@ private:
 };
 
 struct QVMeta {
-  QVMeta() : qv_(0) { };
-  QVMeta(char qv) : qv_(qv) { };
-  char QV() const { return qv_; }
-  char& QV() { return qv_; }
+  static const unsigned char DEFAULT_QV = std::numeric_limits<unsigned char>::max();
+  QVMeta() : qv_(DEFAULT_QV) { };
+  QVMeta(unsigned char qv) : qv_(qv) { };
+  unsigned char QV() const { return qv_; }
+  unsigned char& QV() { return qv_; }
+
+  unsigned char value(size_t idx) const { return qv_; }
+  unsigned char& value(size_t idx) { return qv_; }
 private:
-  char qv_;
+  unsigned char qv_;
 };
 
 // empty baseclass optimization
@@ -155,6 +159,14 @@ struct SeqMeta {
 
   typename Container::const_reference operator[](size_t index) const {
     return data_[index];
+  }
+
+  typename Container::reference back() {
+    return data_.back();
+  }
+
+  typename Container::const_reference back() const{
+    return data_.back();
   }
 
   size_t size() const {

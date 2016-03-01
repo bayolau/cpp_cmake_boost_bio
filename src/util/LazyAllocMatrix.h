@@ -49,15 +49,15 @@ struct LazyAllocMatrix {
   using const_iterator = typename Container::const_iterator;
   static const bool RowMajor = RowMajor_;
 private:
-  static size_t Stride(size_t r, size_t c) {
+  constexpr static size_t Stride(size_t r, size_t c) {
     return (sizeof(T) * (c * RowMajor + r * (not RowMajor)) / Alignment + 1) * Alignment / sizeof(T);
   }
 
-  static size_t MinSize(size_t r, size_t c) {
+  constexpr static size_t MinSize(size_t r, size_t c) {
     return (c * (not RowMajor) + r * RowMajor) * Stride(r, c);
   }
 
-  size_t Index(size_t r, size_t c) const {
+  constexpr size_t Index(size_t r, size_t c) const {
     return (c * (not RowMajor) + r * RowMajor) * stride_ + c * RowMajor + r * (not RowMajor);
   }
 
@@ -109,6 +109,11 @@ public:
     for (size_t idx = index * stride_, end = (index + 1) * stride_; idx != end; ++idx) {
       data_[idx] = val;
     }
+  }
+
+  void assign(size_t r, size_t c, T const& val) {
+    this->resize(r,c);
+    std::fill(data_.begin(), data_.begin() + MinSize(row_, col_), val);
   }
 
   LazyAllocMatrix() : LazyAllocMatrix(0, 0) { };
