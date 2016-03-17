@@ -72,6 +72,7 @@ private:
     const int gap = - int(po.gap_penalty());
     const int match = int(po.match_bonus());
     const int mismatch = - int(po.mis_penalty());
+    const int r_flank_gap = - int(po.r_flank_gap_penalty());
 
     matrix.resize(length(sr) + 1, length(sc) + 1);
 
@@ -85,7 +86,7 @@ private:
       auto itr = matrix.begin(rr); // data of this row
 
       (*itr++).set(int(rr)*gap, Element::Vertical); // first column
-      int last_score = int(rr)*gap; //last score from the same row
+      int last_score = int(rr)*r_flank_gap; //last score from the same row
 
       const auto bi = sr[rr - 1];
       auto itr_last_row = matrix.begin(rr - 1); // data of last row
@@ -93,7 +94,7 @@ private:
         const auto s = (bi == sc[cc - 1]) ? match : mismatch;
         int dir = Element::Diag;
         int score = (*itr_last_row++).score() + s; // (rr-1, cc-1)
-        int tmp = itr_last_row->score() + gap; // (rr-1,cc)
+        int tmp = itr_last_row->score() + (cc + 1 == matrix.col() ? r_flank_gap : gap); // (rr-1,cc)
         if (tmp > score) {
           score = tmp;
           dir = Element::Vertical;
@@ -110,7 +111,7 @@ private:
     }
     using RT = typename std::remove_cv<typename std::remove_reference<decltype(sr[0])>::type>::type;
     using CT = typename std::remove_cv<typename std::remove_reference<decltype(sc[0])>::type>::type;
-    return RetrieveAlignment<RT,CT>(sr.begin(), sc.begin(), matrix.row() - 1, matrix.col() - 1, matrix);
+    return RetrieveAlignment<RT,CT>(begin(sr), begin(sc), matrix.row() - 1, matrix.col() - 1, matrix);
   }
 };
 }

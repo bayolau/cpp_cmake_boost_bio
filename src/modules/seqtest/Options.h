@@ -2,8 +2,8 @@
 // Created by Bayo Lau on 8/12/15.
 //
 
-#ifndef MODULES_BAMTEST_OPTIONS_H
-#define MODULES_BAMTEST_OPTIONS_H
+#ifndef MODULES_SEQTEST_OPTIONS_H
+#define MODULES_SEQTEST_OPTIONS_H
 
 namespace bayolau {
 namespace seqtest {
@@ -27,4 +27,4 @@ private:
 }
 }
 
-#endif //MODULES_BAMTEST_OPTIONS_H
+#endif //MODULES_SEQTEST_OPTIONS_H
