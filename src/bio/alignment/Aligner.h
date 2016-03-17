@@ -85,8 +85,8 @@ private:
     for (size_t rr = 1; rr < matrix.row(); ++rr) { // for each row
       auto itr = matrix.begin(rr); // data of this row
 
-      (*itr++).set(int(rr)*gap, Element::Vertical); // first column
-      int last_score = int(rr)*r_flank_gap; //last score from the same row
+      int last_score = static_cast<int>(rr) * r_flank_gap; //last score from the same row, initially for the first column
+      (*itr++).set(last_score, Element::Vertical); // first column
 
       const auto bi = sr[rr - 1];
       auto itr_last_row = matrix.begin(rr - 1); // data of last row
