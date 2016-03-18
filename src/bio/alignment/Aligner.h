@@ -69,7 +69,8 @@ private:
     -> Alignment< typename std::remove_cv<typename std::remove_reference<decltype(sr[0])>::type>::type
                 , typename std::remove_cv<typename std::remove_reference<decltype(sc[0])>::type>::type
                 > {
-    const int gap = - int(po.gap_penalty());
+    const int r_gap = - int(po.r_gap_penalty());
+    const int c_gap = - int(po.c_gap_penalty());
     const int match = int(po.match_bonus());
     const int mismatch = - int(po.mis_penalty());
     const int r_flank_gap = - int(po.r_flank_gap_penalty());
@@ -79,7 +80,7 @@ private:
     { // first row, row major
       auto itr = matrix.begin(0);
       (*itr++).set(0, Element::Org);
-      for (size_t cc = 1, ce = matrix.col(); cc != ce; ++cc) { (*itr++).set(int(cc)*gap, Element::Horizontal); }
+      for (size_t cc = 1, ce = matrix.col(); cc != ce; ++cc) { (*itr++).set(static_cast<int>(cc)*c_gap, Element::Horizontal); }
     }
 
     for (size_t rr = 1; rr < matrix.row(); ++rr) { // for each row
@@ -94,12 +95,12 @@ private:
         const auto s = (bi == sc[cc - 1]) ? match : mismatch;
         int dir = Element::Diag;
         int score = (*itr_last_row++).score() + s; // (rr-1, cc-1)
-        int tmp = itr_last_row->score() + (cc + 1 == matrix.col() ? r_flank_gap : gap); // (rr-1,cc)
+        int tmp = itr_last_row->score() + (cc + 1 == matrix.col() ? r_flank_gap : r_gap); // (rr-1,cc)
         if (tmp > score) {
           score = tmp;
           dir = Element::Vertical;
         }
-        tmp = last_score + gap; // (rr, cc-1)
+        tmp = last_score + c_gap; // (rr, cc-1)
         if (tmp > score) {
           score = tmp;
           dir = Element::Horizontal;

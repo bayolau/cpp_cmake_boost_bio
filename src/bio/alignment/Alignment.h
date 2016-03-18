@@ -48,12 +48,14 @@ namespace alignment {
 
 struct AlignmentOptions {
   template<class Option>
-  explicit AlignmentOptions(Option const& o) : gap_penalty_(o.gap_penalty()), r_flank_gap_penalty_(o.r_flank_gap_penalty()),
-                                               match_bonus_(o.match_bonus()), mis_penalty_(o.mis_penalty()) { }
+  explicit AlignmentOptions(Option const& o) : r_gap_penalty_(o.r_gap_penalty()), c_gap_penalty_(o.c_gap_penalty()),
+          r_flank_gap_penalty_(o.r_flank_gap_penalty()), match_bonus_(o.match_bonus()), mis_penalty_(o.mis_penalty()) { }
 
-  AlignmentOptions(int a, int b, int c, int d) : gap_penalty_(a), r_flank_gap_penalty_(b), match_bonus_(c), mis_penalty_(d) { }
+  AlignmentOptions(int a, int b, int c, int d, int e) : r_gap_penalty_(a), c_gap_penalty_(b), r_flank_gap_penalty_(c), match_bonus_(d), mis_penalty_(e) { }
 
-  int gap_penalty() const { return gap_penalty_; }
+  int r_gap_penalty() const { return r_gap_penalty_; }
+
+  int c_gap_penalty() const { return c_gap_penalty_; }
 
   int r_flank_gap_penalty() const { return r_flank_gap_penalty_; }
 
@@ -62,7 +64,8 @@ struct AlignmentOptions {
   int mis_penalty() const { return mis_penalty_; }
 
 private:
-  int gap_penalty_;
+  int r_gap_penalty_;
+  int c_gap_penalty_;
   int r_flank_gap_penalty_;
   int match_bonus_;
   int mis_penalty_;
