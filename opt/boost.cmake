@@ -11,7 +11,7 @@ if (BUILD_BOOST AND NOT EXISTS ${OPT_DIR}/include/boost)
   ExternalProject_Add( boost
                        DEPENDS bzip2
                        PREFIX ${OPT_DIR}/boost_cmake_prefix
-                       URL http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz/download
+                       URL file://${OPT_DIR}/boost_1_59_0.tar.gz
                        PATCH_COMMAND patch -p0 < ${OPT_DIR}/boost.patch
                        CONFIGURE_COMMAND ./bootstrap.sh --prefix=${OPT_DIR}
                        BUILD_IN_SOURCE 1
