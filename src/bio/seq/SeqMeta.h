@@ -61,6 +61,7 @@ private:
 };
 
 struct QVMeta {
+  static const unsigned int NUM_META = 1;
   static const unsigned char DEFAULT_QV = std::numeric_limits<unsigned char>::max();
   QVMeta() : qv_(DEFAULT_QV) { };
   QVMeta(unsigned char qv) : qv_(qv) { };

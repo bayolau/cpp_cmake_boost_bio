@@ -106,7 +106,7 @@ struct Element {
         os << '?';
         break;
     }
-    os << std::setw(3) << other.score();
+    os << std::setfill('_') << std::setw(3) << other.score();
     return os;
   }
 
