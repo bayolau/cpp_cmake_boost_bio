@@ -23,7 +23,7 @@ set (CMAKE_C_STANDARD 99)
 set (OPT_DIR ${PROJECT_SOURCE_DIR}/opt)
 set (OPT_INCLUDE ${OPT_DIR}/include)
 # allpaths lg's header are badly organized
-set (OPT_INCLUDE ${OPT_INCLUDE} ${OPT_DIR}/allpathslg/src)
+set (OPT_INCLUDE ${OPT_INCLUDE} ${OPT_DIR}/allpathslg/src ${OPT_DIR}/kissfft)
 set (OPT_LIB ${OPT_DIR}/lib)
 include_directories(${OPT_INCLUDE})
 link_directories(${OPT_LIB})
