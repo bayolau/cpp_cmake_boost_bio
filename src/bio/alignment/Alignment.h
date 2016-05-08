@@ -48,19 +48,25 @@ namespace alignment {
 
 struct AlignmentOptions {
   template<class Option>
-  explicit AlignmentOptions(Option const& o) : gap_penalty_(o.gap_penalty()), match_bonus_(o.match_bonus())
-                                               , mis_penalty_(o.mis_penalty()) { }
+  explicit AlignmentOptions(Option const& o) : r_gap_penalty_(o.r_gap_penalty()), c_gap_penalty_(o.c_gap_penalty()),
+          r_flank_gap_penalty_(o.r_flank_gap_penalty()), match_bonus_(o.match_bonus()), mis_penalty_(o.mis_penalty()) { }
 
-  AlignmentOptions(int a, int b, int c) : gap_penalty_(a), match_bonus_(b), mis_penalty_(c) { }
+  AlignmentOptions(int a, int b, int c, int d, int e) : r_gap_penalty_(a), c_gap_penalty_(b), r_flank_gap_penalty_(c), match_bonus_(d), mis_penalty_(e) { }
 
-  int gap_penalty() const { return gap_penalty_; }
+  int r_gap_penalty() const { return r_gap_penalty_; }
+
+  int c_gap_penalty() const { return c_gap_penalty_; }
+
+  int r_flank_gap_penalty() const { return r_flank_gap_penalty_; }
 
   int match_bonus() const { return match_bonus_; }
 
   int mis_penalty() const { return mis_penalty_; }
 
 private:
-  int gap_penalty_;
+  int r_gap_penalty_;
+  int c_gap_penalty_;
+  int r_flank_gap_penalty_;
   int match_bonus_;
   int mis_penalty_;
 };
@@ -100,7 +106,7 @@ struct Element {
         os << '?';
         break;
     }
-    os << std::setw(3) << other.score();
+    os << std::setfill('_') << std::setw(3) << other.score();
     return os;
   }
 
@@ -172,14 +178,20 @@ public:
   }
 
   friend std::ostream& operator<<(std::ostream& os, const Alignment& other) {
+    os << "a ";
     for (const auto& entry: other.c_) { os << Base::to_char(entry.first); }
     os << "\n";
+    os << "b ";
     for (const auto& entry: other.c_) { os << Base::to_char(entry.second); }
     os << "\n";
     return os;
   }
 
   size_t size() const { return c_.size(); }
+
+  typename Container::const_iterator cbegin() const { return c_.cbegin(); }
+
+  typename Container::const_iterator cend() const { return c_.cend(); }
 
   value_type const& operator[](size_t idx) const {
     return c_[idx];

@@ -69,23 +69,25 @@ private:
     -> Alignment< typename std::remove_cv<typename std::remove_reference<decltype(sr[0])>::type>::type
                 , typename std::remove_cv<typename std::remove_reference<decltype(sc[0])>::type>::type
                 > {
-    const int gap = - int(po.gap_penalty());
+    const int r_gap = - int(po.r_gap_penalty());
+    const int c_gap = - int(po.c_gap_penalty());
     const int match = int(po.match_bonus());
     const int mismatch = - int(po.mis_penalty());
+    const int r_flank_gap = - int(po.r_flank_gap_penalty());
 
     matrix.resize(length(sr) + 1, length(sc) + 1);
 
     { // first row, row major
       auto itr = matrix.begin(0);
       (*itr++).set(0, Element::Org);
-      for (size_t cc = 1, ce = matrix.col(); cc != ce; ++cc) { (*itr++).set(int(cc)*gap, Element::Horizontal); }
+      for (size_t cc = 1, ce = matrix.col(); cc != ce; ++cc) { (*itr++).set(static_cast<int>(cc)*c_gap, Element::Horizontal); }
     }
 
     for (size_t rr = 1; rr < matrix.row(); ++rr) { // for each row
       auto itr = matrix.begin(rr); // data of this row
 
-      (*itr++).set(int(rr)*gap, Element::Vertical); // first column
-      int last_score = int(rr)*gap; //last score from the same row
+      int last_score = static_cast<int>(rr) * r_flank_gap; //last score from the same row, initially for the first column
+      (*itr++).set(last_score, Element::Vertical); // first column
 
       const auto bi = sr[rr - 1];
       auto itr_last_row = matrix.begin(rr - 1); // data of last row
@@ -93,12 +95,12 @@ private:
         const auto s = (bi == sc[cc - 1]) ? match : mismatch;
         int dir = Element::Diag;
         int score = (*itr_last_row++).score() + s; // (rr-1, cc-1)
-        int tmp = itr_last_row->score() + gap; // (rr-1,cc)
+        int tmp = itr_last_row->score() + (cc + 1 == matrix.col() ? r_flank_gap : r_gap); // (rr-1,cc)
         if (tmp > score) {
           score = tmp;
           dir = Element::Vertical;
         }
-        tmp = last_score + gap; // (rr, cc-1)
+        tmp = last_score + c_gap; // (rr, cc-1)
         if (tmp > score) {
           score = tmp;
           dir = Element::Horizontal;
@@ -110,7 +112,7 @@ private:
     }
     using RT = typename std::remove_cv<typename std::remove_reference<decltype(sr[0])>::type>::type;
     using CT = typename std::remove_cv<typename std::remove_reference<decltype(sc[0])>::type>::type;
-    return RetrieveAlignment<RT,CT>(sr.begin(), sc.begin(), matrix.row() - 1, matrix.col() - 1, matrix);
+    return RetrieveAlignment<RT,CT>(begin(sr), begin(sc), matrix.row() - 1, matrix.col() - 1, matrix);
   }
 };
 }

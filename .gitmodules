@@ -11,3 +11,6 @@
 [submodule "opt/discovar"]
 	path = opt/discovar
 	url = https://github.com/bayolau/discovar.git
+[submodule "opt/kissfft"]
+	path = opt/kissfft
+	url = https://github.com/bayolau/kissfft.git

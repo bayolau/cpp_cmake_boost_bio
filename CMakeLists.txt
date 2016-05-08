@@ -16,14 +16,14 @@ option (BUILD_BOOST "build boost into opt" ON)
 
 # language settings
 set (CMAKE_CXX_STANDARD 11)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -fopenmp -Wno-deprecated -Wno-unused-parameter -Wno-unused-variable -march=native -mtune=native")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations -fopenmp -Wno-deprecated -Wno-unused-parameter -Wno-unused-variable -march=native -mtune=native -DNDEBUG -DSEQAN_ENABLE_DEBUG=0 -DSEQAN_ENABLE_TESTING=0  -Wextra -Wall -Wsign-promo -Wendif-labels -Wno-unused -Wno-deprecated -Wno-long-long -Wno-parentheses -Wno-unused-parameter -fno-nonansi-builtins -mieee-fp -fno-strict-aliasing -iquote ")
 set (CMAKE_C_STANDARD 99)
 
 # set up opt structure
 set (OPT_DIR ${PROJECT_SOURCE_DIR}/opt)
 set (OPT_INCLUDE ${OPT_DIR}/include)
 # allpaths lg's header are badly organized
-set (OPT_INCLUDE ${OPT_INCLUDE} ${OPT_DIR}/allpathslg/src)
+set (OPT_INCLUDE ${OPT_INCLUDE} ${OPT_DIR}/allpathslg/src ${OPT_DIR}/kissfft)
 set (OPT_LIB ${OPT_DIR}/lib)
 include_directories(${OPT_INCLUDE})
 link_directories(${OPT_LIB})

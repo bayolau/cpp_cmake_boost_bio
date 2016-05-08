@@ -60,6 +60,20 @@ private:
   M meta_;
 };
 
+struct QVMeta {
+  static const unsigned int NUM_META = 1;
+  static const unsigned char DEFAULT_QV = std::numeric_limits<unsigned char>::max();
+  QVMeta() : qv_(DEFAULT_QV) { };
+  QVMeta(unsigned char qv) : qv_(qv) { };
+  unsigned char QV() const { return qv_; }
+  unsigned char& QV() { return qv_; }
+
+  unsigned char value(size_t idx) const { return qv_; }
+  unsigned char& value(size_t idx) { return qv_; }
+private:
+  unsigned char qv_;
+};
+
 // empty baseclass optimization
 template<>
 struct Meta<void> {
@@ -98,6 +112,7 @@ std::ostream& operator<<(std::ostream& os, BaseMeta<B, M> const& other) {
 
 static_assert(sizeof(BaseMeta<char, void>) == 1, "empty base class optimization is required. Don't mess with my code.");
 static_assert(sizeof(BaseMeta<char, char>) == 2, "byte pack required. Don't mess with my code.");
+static_assert(sizeof(BaseMeta<char, QVMeta>) == 2, "byte pack required. Don't mess with my code.");
 static_assert(sizeof(BaseMeta<char, std::array<char, 3>>) == 4, "byte pack required. Don't mess with my code.");
 static_assert(sizeof(BaseMeta<char, std::array<char, 7>>) == 8, "byte pack required. Don't mess with my code.");
 
@@ -107,6 +122,10 @@ struct SeqMeta {
   using Container = std::vector<BaseMeta<B, M>>;
 
   SeqMeta() = default;
+  SeqMeta(SeqMeta const&) = default;
+  SeqMeta(SeqMeta&&) = default;
+  SeqMeta& operator=(SeqMeta const&) = default;
+  SeqMeta& operator=(SeqMeta&&) = default;
 
   SeqMeta(typename Container::const_iterator i, typename Container::const_iterator e) : data_(i, e) { }
 
@@ -143,8 +162,20 @@ struct SeqMeta {
     return data_[index];
   }
 
+  typename Container::reference back() {
+    return data_.back();
+  }
+
+  typename Container::const_reference back() const{
+    return data_.back();
+  }
+
   size_t size() const {
     return data_.size();
+  }
+
+  void clear() {
+    data_.clear();
   }
 
   void rc() {
@@ -219,7 +250,7 @@ void PrintFastq(ostream& os, SeqMeta<B, M> const& seq, std::string const& id, ch
   const char upper = 93; // this is fastq maximum
   const char maximum = 93 + shift;
   for (auto const& entry: seq) {
-    os << char(entry.meta() > upper ? maximum : entry.meta() + shift);
+    os << char(entry.meta().QV() > upper ? maximum : entry.meta().QV() + shift);
   }
   os << '\n';
 }
